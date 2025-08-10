@@ -91,14 +91,38 @@ val cleanInvalidPackagedRes by tasks.register("cleanInvalidPackagedRes") {
     }
 }
 
+// Clean any merged resources in intermediates that accidentally include spaces (e.g., values-hy 2.xml)
+val cleanInvalidMergedRes by tasks.register("cleanInvalidMergedRes") {
+    group = "verification"
+    description = "Deletes any merged resource files with spaces under build/intermediates/incremental/**/merged.dir."
+    doLast {
+        val incRoot = file("build/intermediates/incremental")
+        if (incRoot.exists()) {
+            val invalidFiles = incRoot.walkTopDown()
+                .filter { it.isFile && it.path.contains("/merged.dir/") && it.name.contains(" ") }
+                .toList()
+            if (invalidFiles.isNotEmpty()) {
+                logger.lifecycle("cleanInvalidMergedRes: Deleting ${invalidFiles.size} merged resource file(s) with spaces in name:")
+                invalidFiles.forEach { f ->
+                    logger.lifecycle(" - ${f}")
+                    f.delete()
+                }
+            }
+        }
+    }
+}
+
 // Ensure sanitization runs before any build and parsing tasks clean intermediates
 // preBuild happens before resource processing, parsing tasks depend on cleaning intermediates
 tasks.named("preBuild").configure {
     dependsOn(sanitizeRes)
+    dependsOn(cleanInvalidPackagedRes)
+    dependsOn(cleanInvalidMergedRes)
 }
 
 tasks.matching { it.name.startsWith("parse") && it.name.endsWith("Resources") }.configureEach {
     dependsOn(cleanInvalidPackagedRes)
+    dependsOn(cleanInvalidMergedRes)
 }
 
 dependencies {
@@ -117,6 +141,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":feature:home"))
+    implementation(project(":data:local"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

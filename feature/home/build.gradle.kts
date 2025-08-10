@@ -23,9 +23,11 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.activity.compose)
+    // Removed to avoid duplicate packaging of activity-compose across modules; app provides it
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":data:local"))
 
     testImplementation(libs.junit)
 }
