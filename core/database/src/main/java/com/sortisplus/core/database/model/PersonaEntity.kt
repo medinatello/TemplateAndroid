@@ -1,4 +1,4 @@
-package com.androidbase.core.database.model
+package com.sortisplus.core.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

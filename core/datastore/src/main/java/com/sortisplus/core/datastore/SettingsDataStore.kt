@@ -1,4 +1,4 @@
-package com.androidbase.core.datastore
+package com.sortisplus.core.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

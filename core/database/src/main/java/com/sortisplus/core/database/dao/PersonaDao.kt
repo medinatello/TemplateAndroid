@@ -1,7 +1,7 @@
-package com.androidbase.core.database.dao
+package com.sortisplus.core.database.dao
 
 import androidx.room.*
-import com.androidbase.core.database.model.PersonaEntity
+import com.sortisplus.core.database.model.PersonaEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,4 +1,4 @@
-package com.androidbase.core.database
+package com.sortisplus.core.database
 
 import android.content.Context
 import androidx.room.Room

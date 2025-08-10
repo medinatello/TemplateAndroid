@@ -1,4 +1,4 @@
-package com.androidbase.core.database
+package com.sortisplus.core.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase

@@ -63,27 +63,29 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
         fechaNacimiento: Long,
         peso: Double,
         esZurdo: Boolean
-    ): DatabaseResult<Long> = try {
-        // Validate input
-        val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
-        if (!validation.isValid) {
-            return DatabaseResult.Error(
-                IllegalArgumentException(validation.errors.joinToString(", "))
+    ): DatabaseResult<Long> {
+        return try {
+            // Validate input
+            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            if (!validation.isValid) {
+                return DatabaseResult.Error(
+                    IllegalArgumentException(validation.errors.joinToString(", "))
+                )
+            }
+            
+            val id = dao.insert(
+                PersonaEntity(
+                    nombre = nombre.trim(),
+                    apellido = apellido.trim(),
+                    fechaNacimiento = fechaNacimiento,
+                    peso = peso,
+                    esZurdo = esZurdo
+                )
             )
+            DatabaseResult.Success(id)
+        } catch (e: Exception) {
+            DatabaseResult.Error(e)
         }
-        
-        val id = dao.insert(
-            PersonaEntity(
-                nombre = nombre.trim(),
-                apellido = apellido.trim(),
-                fechaNacimiento = fechaNacimiento,
-                peso = peso,
-                esZurdo = esZurdo
-            )
-        )
-        DatabaseResult.Success(id)
-    } catch (e: Exception) {
-        DatabaseResult.Error(e)
     }
 
     override suspend fun update(
@@ -93,29 +95,31 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
         fechaNacimiento: Long,
         peso: Double,
         esZurdo: Boolean
-    ): DatabaseResult<Boolean> = try {
-        // Validate input
-        val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
-        if (!validation.isValid) {
-            return DatabaseResult.Error(
-                IllegalArgumentException(validation.errors.joinToString(", "))
-            )
-        }
-        
-        val current = dao.getById(id) 
-            ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+    ): DatabaseResult<Boolean> {
+        return try {
+            // Validate input
+            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            if (!validation.isValid) {
+                return DatabaseResult.Error(
+                    IllegalArgumentException(validation.errors.joinToString(", "))
+                )
+            }
             
-        val changed = current.copy(
-            nombre = nombre.trim(),
-            apellido = apellido.trim(),
-            fechaNacimiento = fechaNacimiento,
-            peso = peso,
-            esZurdo = esZurdo
-        )
-        val success = dao.update(changed) > 0
-        DatabaseResult.Success(success)
-    } catch (e: Exception) {
-        DatabaseResult.Error(e)
+            val current = dao.getById(id) 
+                ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+                
+            val changed = current.copy(
+                nombre = nombre.trim(),
+                apellido = apellido.trim(),
+                fechaNacimiento = fechaNacimiento,
+                peso = peso,
+                esZurdo = esZurdo
+            )
+            val success = dao.update(changed) > 0
+            DatabaseResult.Success(success)
+        } catch (e: Exception) {
+            DatabaseResult.Error(e)
+        }
     }
 
     override suspend fun delete(id: Long): DatabaseResult<Boolean> = try {
