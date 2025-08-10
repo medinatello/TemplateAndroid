@@ -1,4 +1,4 @@
-package com.sortisplus.templaceandroid
+package com.sortisplus.templateandroid
 
 import org.junit.Test
 

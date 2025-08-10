@@ -19,6 +19,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TemplaceAndroid"
+rootProject.name = "TemplateAndroid"
 include(":app")
+include(":core:designsystem")
+include(":core:ui")
+include(":core:common")
+include(":feature:home")
  
