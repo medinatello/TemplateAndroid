@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +21,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.androidbase.core.data.Persona
-import com.androidbase.data.local.LocalProviders
+import com.sortisplus.core.data.DatabaseResult
+import com.sortisplus.core.data.Persona
+import com.sortisplus.data.local.LocalProviders
 import com.sortisplus.core.ui.AppScaffold
 import com.sortisplus.core.ui.PrimaryButton
 import kotlinx.coroutines.launch
@@ -133,30 +135,148 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
     var pesoStr by remember { mutableStateOf("") }
     var esZurdo by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    var savedMessage by remember { mutableStateOf<String?>(null) }
+    var resultMessage by remember { mutableStateOf<String?>(null) }
+    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    // Validación en tiempo real
+    val nombreError = when {
+        nombre.isBlank() -> "El nombre es requerido"
+        nombre.length > 50 -> "Máximo 50 caracteres"
+        else -> null
+    }
+    
+    val apellidoError = when {
+        apellido.isBlank() -> "El apellido es requerido" 
+        apellido.length > 50 -> "Máximo 50 caracteres"
+        else -> null
+    }
+    
+    val pesoError = when {
+        pesoStr.isBlank() -> "El peso es requerido"
+        pesoStr.toDoubleOrNull() == null -> "Debe ser un número válido"
+        (pesoStr.toDoubleOrNull() ?: 0.0) <= 0 -> "Debe ser mayor a 0"
+        (pesoStr.toDoubleOrNull() ?: 0.0) > 1000 -> "Debe ser menor a 1000kg"
+        else -> null
+    }
+
+    val isFormValid = nombreError == null && apellidoError == null && 
+                     pesoError == null && fechaNacimientoStr.isNotBlank()
 
     AppScaffold(title = "Crear Persona") { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = apellido, onValueChange = { apellido = it }, label = { Text("Apellido") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = fechaNacimientoStr, onValueChange = { fechaNacimientoStr = it }, label = { Text("Fecha Nacimiento (epoch ms)") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = pesoStr, onValueChange = { pesoStr = it }, label = { Text("Peso (kg)") }, modifier = Modifier.fillMaxWidth())
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Campo Nombre con validación
+            OutlinedTextField(
+                value = nombre, 
+                onValueChange = { nombre = it },
+                label = { Text("Nombre") },
+                supportingText = nombreError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = nombreError != null,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Campo Apellido con validación  
+            OutlinedTextField(
+                value = apellido,
+                onValueChange = { apellido = it },
+                label = { Text("Apellido") },
+                supportingText = apellidoError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = apellidoError != null,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Campo Fecha (mejorado)
+            OutlinedTextField(
+                value = fechaNacimientoStr,
+                onValueChange = { fechaNacimientoStr = it },
+                label = { Text("Fecha Nacimiento") },
+                supportingText = { Text("Formato: aaaa-mm-dd (ej: 1990-05-15)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Campo Peso con validación
+            OutlinedTextField(
+                value = pesoStr,
+                onValueChange = { pesoStr = it },
+                label = { Text("Peso (kg)") },
+                supportingText = pesoError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = pesoError != null,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Checkbox zurdo
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Checkbox(checked = esZurdo, onCheckedChange = { esZurdo = it })
                 Text("Es zurdo")
             }
-            PrimaryButton(text = "Guardar", onClick = {
-                val fecha = fechaNacimientoStr.toLongOrNull() ?: 0L
-                val peso = pesoStr.toDoubleOrNull() ?: 0.0
-                scope.launch {
-                    val id = repository.create(nombre, apellido, fecha, peso, esZurdo)
-                    savedMessage = "Persona creada con id $id"
-                }
-            })
-            savedMessage?.let { Text(it) }
+            
+            // Botón guardar mejorado
+            PrimaryButton(
+                text = if (isLoading) "Guardando..." else "Guardar",
+                onClick = {
+                    if (!isFormValid) {
+                        resultMessage = "Por favor corrige los errores"
+                        isError = true
+                        return@PrimaryButton
+                    }
+                    
+                    isLoading = true
+                    val fecha = try {
+                        // Convertir fecha simple YYYY-MM-DD a timestamp
+                        val parts = fechaNacimientoStr.split("-")
+                        if (parts.size == 3) {
+                            val year = parts[0].toInt()
+                            val month = parts[1].toInt() - 1 // Calendar months are 0-based
+                            val day = parts[2].toInt()
+                            java.util.Calendar.getInstance().apply {
+                                set(year, month, day)
+                            }.timeInMillis
+                        } else {
+                            fechaNacimientoStr.toLongOrNull() ?: System.currentTimeMillis()
+                        }
+                    } catch (e: Exception) {
+                        System.currentTimeMillis() - (25 * 365 * 24 * 60 * 60 * 1000L) // Default: 25 años atrás
+                    }
+                    
+                    val peso = pesoStr.toDoubleOrNull() ?: 0.0
+                    
+                    scope.launch {
+                        when (val result = repository.create(nombre, apellido, fecha, peso, esZurdo)) {
+                            is DatabaseResult.Success -> {
+                                resultMessage = "✅ Persona creada exitosamente con ID ${result.data}"
+                                isError = false
+                                // Limpiar formulario
+                                nombre = ""
+                                apellido = ""
+                                fechaNacimientoStr = ""
+                                pesoStr = ""
+                                esZurdo = false
+                            }
+                            is DatabaseResult.Error -> {
+                                resultMessage = "❌ Error: ${result.exception.message}"
+                                isError = true
+                            }
+                        }
+                        isLoading = false
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Mensaje de resultado
+            resultMessage?.let { 
+                Text(
+                    text = it,
+                    color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                )
+            }
+            
             PrimaryButton(text = "Volver", onClick = onBack)
         }
     }
@@ -167,24 +287,65 @@ fun PersonaDeleteScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personaRepository(context) }
     var idStr by remember { mutableStateOf("") }
-    var result by remember { mutableStateOf<String?>(null) }
+    var resultMessage by remember { mutableStateOf<String?>(null) }
+    var isError by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     AppScaffold(title = "Eliminar Persona") { padding ->
-        Column(modifier = Modifier.padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(value = idStr, onValueChange = { idStr = it }, label = { Text("ID") })
-            PrimaryButton(text = "Eliminar", onClick = {
-                val id = idStr.toLongOrNull()
-                if (id != null) {
-                    scope.launch {
-                        val ok = repository.delete(id)
-                        result = if (ok) "Eliminado" else "No encontrado"
+        Column(
+            modifier = Modifier.padding(padding).padding(16.dp), 
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedTextField(
+                value = idStr, 
+                onValueChange = { idStr = it }, 
+                label = { Text("ID de la Persona") },
+                supportingText = { Text("Ingresa el ID numérico de la persona a eliminar") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            PrimaryButton(
+                text = if (isLoading) "Eliminando..." else "Eliminar",
+                onClick = {
+                    val id = idStr.toLongOrNull()
+                    if (id == null) {
+                        resultMessage = "❌ ID inválido. Debe ser un número"
+                        isError = true
+                        return@PrimaryButton
                     }
-                } else {
-                    result = "ID inválido"
-                }
-            })
-            result?.let { Text(it) }
+                    
+                    isLoading = true
+                    scope.launch {
+                        when (val result = repository.delete(id)) {
+                            is DatabaseResult.Success -> {
+                                if (result.data) {
+                                    resultMessage = "✅ Persona eliminada exitosamente"
+                                    isError = false
+                                    idStr = "" // Limpiar campo
+                                } else {
+                                    resultMessage = "❌ No se encontró persona con ID $id"
+                                    isError = true
+                                }
+                            }
+                            is DatabaseResult.Error -> {
+                                resultMessage = "❌ Error: ${result.exception.message}"
+                                isError = true
+                            }
+                        }
+                        isLoading = false
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            resultMessage?.let { 
+                Text(
+                    text = it,
+                    color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                )
+            }
+            
             PrimaryButton(text = "Volver", onClick = onBack)
         }
     }
@@ -195,23 +356,89 @@ fun PersonaFindScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personaRepository(context) }
     var idStr by remember { mutableStateOf("") }
-    var result by remember { mutableStateOf<Persona?>(null) }
+    var persona by remember { mutableStateOf<Persona?>(null) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     AppScaffold(title = "Buscar Persona") { padding ->
-        Column(modifier = Modifier.padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(value = idStr, onValueChange = { idStr = it }, label = { Text("ID") })
-            PrimaryButton(text = "Buscar", onClick = {
-                val id = idStr.toLongOrNull()
-                if (id != null) {
-                    scope.launch {
-                        result = repository.getById(id)
+        Column(
+            modifier = Modifier.padding(padding).padding(16.dp), 
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedTextField(
+                value = idStr, 
+                onValueChange = { idStr = it }, 
+                label = { Text("ID de la Persona") },
+                supportingText = { Text("Ingresa el ID numérico de la persona a buscar") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            PrimaryButton(
+                text = if (isLoading) "Buscando..." else "Buscar",
+                onClick = {
+                    val id = idStr.toLongOrNull()
+                    if (id == null) {
+                        errorMessage = "❌ ID inválido. Debe ser un número"
+                        persona = null
+                        return@PrimaryButton
                     }
-                }
-            })
-            result?.let { p ->
-                Text("${p.id}: ${p.nombre} ${p.apellido} | ${p.edad} años | Peso ${p.peso}kg | Zurdo: ${if (p.esZurdo) "Sí" else "No"}")
+                    
+                    isLoading = true
+                    errorMessage = null
+                    persona = null
+                    
+                    scope.launch {
+                        when (val result = repository.getById(id)) {
+                            is DatabaseResult.Success -> {
+                                if (result.data != null) {
+                                    persona = result.data
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "❌ No se encontró persona con ID $id"
+                                    persona = null
+                                }
+                            }
+                            is DatabaseResult.Error -> {
+                                errorMessage = "❌ Error: ${result.exception.message}"
+                                persona = null
+                            }
+                        }
+                        isLoading = false
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Mostrar error si existe
+            errorMessage?.let { 
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
+            
+            // Mostrar persona encontrada
+            persona?.let { p ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "✅ Persona encontrada:",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text("ID: ${p.id}")
+                    Text("Nombre: ${p.nombre} ${p.apellido}")
+                    Text("Edad: ${p.edad} años")
+                    Text("Peso: ${p.peso}kg")
+                    Text("Zurdo: ${if (p.esZurdo) "Sí" else "No"}")
+                }
+            }
+            
             PrimaryButton(text = "Volver", onClick = onBack)
         }
     }

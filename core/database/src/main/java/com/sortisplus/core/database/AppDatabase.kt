@@ -1,11 +1,11 @@
-package com.androidbase.core.database
+package com.sortisplus.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.androidbase.core.database.dao.ElementDao
-import com.androidbase.core.database.dao.PersonaDao
-import com.androidbase.core.database.model.ElementEntity
-import com.androidbase.core.database.model.PersonaEntity
+import com.sortisplus.core.database.dao.ElementDao
+import com.sortisplus.core.database.dao.PersonaDao
+import com.sortisplus.core.database.model.ElementEntity
+import com.sortisplus.core.database.model.PersonaEntity
 
 @Database(
   entities = [ElementEntity::class, PersonaEntity::class],

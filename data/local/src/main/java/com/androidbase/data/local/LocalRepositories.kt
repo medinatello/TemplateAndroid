@@ -1,15 +1,16 @@
-package com.androidbase.data.local
+package com.sortisplus.data.local
 
 import android.content.Context
-import com.androidbase.core.data.Element
-import com.androidbase.core.data.ElementRepository
-import com.androidbase.core.data.Persona
-import com.androidbase.core.data.PersonaRepository
-import com.androidbase.core.data.SettingsRepository
-import com.androidbase.core.database.DatabaseProvider
-import com.androidbase.core.database.model.ElementEntity
-import com.androidbase.core.database.model.PersonaEntity
-import com.androidbase.core.datastore.SettingsDataStore
+import com.sortisplus.core.data.DatabaseResult
+import com.sortisplus.core.data.Element
+import com.sortisplus.core.data.ElementRepository
+import com.sortisplus.core.data.Persona
+import com.sortisplus.core.data.PersonaRepository
+import com.sortisplus.core.data.SettingsRepository
+import com.sortisplus.core.database.DatabaseProvider
+import com.sortisplus.core.database.model.ElementEntity
+import com.sortisplus.core.database.model.PersonaEntity
+import com.sortisplus.core.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -49,7 +50,12 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
     override fun observeAll(): Flow<List<Persona>> =
         dao.observeAll().map { list -> list.map { it.toDomain() } }
 
-    override suspend fun getById(id: Long): Persona? = dao.getById(id)?.toDomain()
+    override suspend fun getById(id: Long): DatabaseResult<Persona?> = try {
+        val persona = dao.getById(id)?.toDomain()
+        DatabaseResult.Success(persona)
+    } catch (e: Exception) {
+        DatabaseResult.Error(e)
+    }
 
     override suspend fun create(
         nombre: String,
@@ -57,16 +63,27 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
         fechaNacimiento: Long,
         peso: Double,
         esZurdo: Boolean
-    ): Long {
-        return dao.insert(
+    ): DatabaseResult<Long> = try {
+        // Validate input
+        val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+        if (!validation.isValid) {
+            return DatabaseResult.Error(
+                IllegalArgumentException(validation.errors.joinToString(", "))
+            )
+        }
+        
+        val id = dao.insert(
             PersonaEntity(
-                nombre = nombre,
-                apellido = apellido,
+                nombre = nombre.trim(),
+                apellido = apellido.trim(),
                 fechaNacimiento = fechaNacimiento,
                 peso = peso,
                 esZurdo = esZurdo
             )
         )
+        DatabaseResult.Success(id)
+    } catch (e: Exception) {
+        DatabaseResult.Error(e)
     }
 
     override suspend fun update(
@@ -76,19 +93,41 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
         fechaNacimiento: Long,
         peso: Double,
         esZurdo: Boolean
-    ): Boolean {
-        val current = dao.getById(id) ?: return false
+    ): DatabaseResult<Boolean> = try {
+        // Validate input
+        val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+        if (!validation.isValid) {
+            return DatabaseResult.Error(
+                IllegalArgumentException(validation.errors.joinToString(", "))
+            )
+        }
+        
+        val current = dao.getById(id) 
+            ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+            
         val changed = current.copy(
-            nombre = nombre,
-            apellido = apellido,
+            nombre = nombre.trim(),
+            apellido = apellido.trim(),
             fechaNacimiento = fechaNacimiento,
             peso = peso,
             esZurdo = esZurdo
         )
-        return dao.update(changed) > 0
+        val success = dao.update(changed) > 0
+        DatabaseResult.Success(success)
+    } catch (e: Exception) {
+        DatabaseResult.Error(e)
     }
 
-    override suspend fun delete(id: Long): Boolean = dao.deleteById(id) > 0
+    override suspend fun delete(id: Long): DatabaseResult<Boolean> = try {
+        val success = dao.deleteById(id) > 0
+        if (!success) {
+            DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+        } else {
+            DatabaseResult.Success(true)
+        }
+    } catch (e: Exception) {
+        DatabaseResult.Error(e)
+    }
 }
 
 private fun PersonaEntity.toDomain() = Persona(

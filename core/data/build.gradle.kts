@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.androidbase.core.data"
+    namespace = "com.sortisplus.core.data"
     compileSdk = 36
     defaultConfig { minSdk = 29 }
     compileOptions {

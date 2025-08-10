@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.androidbase.core.database"
+    namespace = "com.sortisplus.core.database"
     compileSdk = 36
 
     defaultConfig {
