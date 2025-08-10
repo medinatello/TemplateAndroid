@@ -1,0 +1,8 @@
+<resources>
+    <string name="home_screen_title">Android base</string>
+    <string name="home_screen_welcome_message">Bienvenido a la base del proyecto</string>
+    <string name="button_continue">Continuar</string>
+    <string name="details_screen_title">Details</string>
+    <string name="details_screen_message">Segunda pantalla</string>
+    <string name="button_back">Volver</string>
+</resources>
