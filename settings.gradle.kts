@@ -25,4 +25,8 @@ include(":core:designsystem")
 include(":core:ui")
 include(":core:common")
 include(":feature:home")
+include(":core:database")
+include(":core:datastore")
+include(":core:data")
+include(":data:local")
  
