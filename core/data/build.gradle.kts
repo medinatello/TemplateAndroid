@@ -16,4 +16,8 @@ android {
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
+    
+    // Test dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

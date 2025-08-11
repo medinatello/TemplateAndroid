@@ -69,4 +69,36 @@
     <string name="label_id">ID</string>
     <string name="label_name">Nombre</string>
     <string name="label_age">Edad</string>
+    
+    <!-- Actions / Theme -->
+    <string name="action_toggle_theme">Cambiar tema</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_light">Claro</string>
+    
+    <!-- Search -->
+    <string name="label_search">Buscar</string>
+    <string name="search_hint">Buscar personas...</string>
+    <string name="search_no_results">No se encontraron resultados</string>
+    
+    <!-- Navigation -->
+    <string name="nav_menu">Menú</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_people">Personas</string>
+    <string name="nav_settings">Configuración</string>
+    
+    <!-- Menu sections -->
+    <string name="menu_section_main">Principal</string>
+    <string name="menu_section_data">Gestión de Datos</string>
+    <string name="menu_section_settings">Configuración</string>
+    
+    <!-- Modern UI -->
+    <string name="app_description">Plantilla Android con arquitectura moderna</string>
+    <string name="version_info">Versión 1.0 - MVP 2.5</string>
+    
+    <!-- Error messages -->
+    <string name="error_field_required">es requerido</string>
+    <string name="error_max_50_chars">Máximo 50 caracteres</string>
+    <string name="error_invalid_number">Debe ser un número válido</string>
+    <string name="error_greater_than_zero">Debe ser mayor a 0</string>
+    <string name="error_less_than_1000kg">Debe ser menor a 1000kg</string>
 </resources>

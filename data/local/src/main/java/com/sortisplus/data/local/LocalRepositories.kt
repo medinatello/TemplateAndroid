@@ -14,6 +14,14 @@ import com.sortisplus.core.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Local implementation of ElementRepository using Room database
+ * 
+ * Provides CRUD operations for Element entities stored in local SQLite database.
+ * All operations are performed asynchronously using Kotlin coroutines.
+ * 
+ * @param context Android context required for database access
+ */
 class LocalElementRepository(context: Context) : ElementRepository {
     private val db = DatabaseProvider.get(context)
     private val dao = db.elementDao()
@@ -43,6 +51,14 @@ private fun ElementEntity.toDomain() = Element(
     updatedAt = updatedAt
 )
 
+/**
+ * Local implementation of PersonRepository using Room database
+ * 
+ * Handles person data persistence with validation and error handling.
+ * Implements the Repository pattern with Result wrapper for safe error management.
+ * 
+ * @param context Android context required for database access
+ */
 class LocalPersonRepository(context: Context) : PersonRepository {
     private val db = DatabaseProvider.get(context)
     private val dao = db.personDao()
@@ -106,7 +122,7 @@ class LocalPersonRepository(context: Context) : PersonRepository {
             }
 
             val current = dao.getById(id)
-                ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+                ?: return DatabaseResult.Error(IllegalArgumentException("Person with ID $id not found"))
 
             val changed = current.copy(
                 firstName = firstName.trim(),
@@ -125,7 +141,7 @@ class LocalPersonRepository(context: Context) : PersonRepository {
     override suspend fun delete(id: Long): DatabaseResult<Boolean> = try {
         val success = dao.deleteById(id) > 0
         if (!success) {
-            DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+            DatabaseResult.Error(IllegalArgumentException("Person with ID $id not found"))
         } else {
             DatabaseResult.Success(true)
         }
@@ -143,6 +159,14 @@ private fun PersonEntity.toDomain() = Person(
     isLeftHanded = isLeftHanded
 )
 
+/**
+ * Local implementation of SettingsRepository using DataStore
+ * 
+ * Manages application settings with reactive data streams.
+ * Provides type-safe access to user preferences.
+ * 
+ * @param context Android context required for DataStore access
+ */
 class LocalSettingsRepository(context: Context) : SettingsRepository {
     private val ds = SettingsDataStore(context)
     override val darkTheme = ds.darkTheme
@@ -151,6 +175,12 @@ class LocalSettingsRepository(context: Context) : SettingsRepository {
     override suspend fun setListOrder(value: String) = ds.setListOrder(value)
 }
 
+/**
+ * Provider object for creating local repository instances
+ * 
+ * Implements the factory pattern to provide repository instances
+ * with proper dependency injection. Acts as a simple service locator.
+ */
 object LocalProviders {
     fun elementRepository(context: Context): ElementRepository =
         LocalElementRepository(context)

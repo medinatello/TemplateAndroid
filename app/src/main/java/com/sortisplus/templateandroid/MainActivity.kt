@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sortisplus.core.common.Route
 import com.sortisplus.core.designsystem.AppTheme
+import com.sortisplus.data.local.LocalProviders
 import com.sortisplus.feature.home.CustomerMenuScreen
 import com.sortisplus.feature.home.DetailsScreen
 import com.sortisplus.feature.home.HomeScreen
@@ -19,6 +20,11 @@ import com.sortisplus.feature.home.PersonDeleteScreen
 import com.sortisplus.feature.home.PersonFindScreen
 import com.sortisplus.feature.home.PersonListScreen
 import com.sortisplus.feature.home.GreetingScreen
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +39,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TemplateAndroidApp() {
-    AppTheme {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val settings = remember { LocalProviders.settingsRepository(context) }
+    val isDark by settings.darkTheme.collectAsState(initial = false)
+    val scope = rememberCoroutineScope()
+
+    AppTheme(darkTheme = isDark) {
         val navController = rememberNavController()
         NavHost(
             navController = navController,
@@ -41,7 +52,9 @@ fun TemplateAndroidApp() {
         ) {
             // Keep original sample routes
             composable(Route.Home) {
-                HomeScreen(onContinue = { navController.navigate(Route.Details) })
+                HomeScreen(
+                    onContinue = { navController.navigate(Route.Details) }
+                )
             }
             composable(Route.Details) {
                 DetailsScreen(onBack = { navController.popBackStack() })
@@ -67,16 +80,32 @@ fun TemplateAndroidApp() {
                 )
             }
             composable(Route.PersonList) {
-                PersonListScreen(onBack = { navController.popBackStack() })
+                PersonListScreen(
+                    onBack = { navController.popBackStack() },
+                    isDarkTheme = isDark,
+                    onToggleTheme = { scope.launch { settings.setDarkTheme(!isDark) } }
+                )
             }
             composable(Route.PersonCreate) {
-                PersonCreateScreen(onBack = { navController.popBackStack() })
+                PersonCreateScreen(
+                    onBack = { navController.popBackStack() },
+                    isDarkTheme = isDark,
+                    onToggleTheme = { scope.launch { settings.setDarkTheme(!isDark) } }
+                )
             }
             composable(Route.PersonDelete) {
-                PersonDeleteScreen(onBack = { navController.popBackStack() })
+                PersonDeleteScreen(
+                    onBack = { navController.popBackStack() },
+                    isDarkTheme = isDark,
+                    onToggleTheme = { scope.launch { settings.setDarkTheme(!isDark) } }
+                )
             }
             composable(Route.PersonFind) {
-                PersonFindScreen(onBack = { navController.popBackStack() })
+                PersonFindScreen(
+                    onBack = { navController.popBackStack() },
+                    isDarkTheme = isDark,
+                    onToggleTheme = { scope.launch { settings.setDarkTheme(!isDark) } }
+                )
             }
         }
     }

@@ -27,7 +27,7 @@ data class Element(
     val updatedAt: Long? = null
 )
 
-// Person domain model (Cliente)
+// Person domain model (Customer)
 data class Person(
     val id: Long,
     val firstName: String,
@@ -54,17 +54,17 @@ data class Person(
         ): ValidationResult {
             val errors = mutableListOf<String>()
 
-            if (firstName.isBlank()) errors.add("El nombre no puede estar vacío")
-            if (firstName.length > 50) errors.add("El nombre no puede tener más de 50 caracteres")
+            if (firstName.isBlank()) errors.add("First name cannot be empty")
+            if (firstName.length > 50) errors.add("First name cannot have more than 50 characters")
 
-            if (lastName.isBlank()) errors.add("El apellido no puede estar vacío")
-            if (lastName.length > 50) errors.add("El apellido no puede tener más de 50 caracteres")
+            if (lastName.isBlank()) errors.add("Last name cannot be empty")
+            if (lastName.length > 50) errors.add("Last name cannot have more than 50 characters")
 
-            if (birthDateMillis <= 0) errors.add("La fecha de nacimiento debe ser válida")
-            if (birthDateMillis > System.currentTimeMillis()) errors.add("La fecha de nacimiento no puede ser futura")
+            if (birthDateMillis <= 0) errors.add("Birth date must be valid")
+            if (birthDateMillis > System.currentTimeMillis()) errors.add("Birth date cannot be in the future")
 
-            if (weightKg <= 0) errors.add("El peso debe ser mayor a 0")
-            if (weightKg > 1000) errors.add("El peso debe ser menor a 1000kg")
+            if (weightKg <= 0) errors.add("Weight must be greater than 0")
+            if (weightKg > 1000) errors.add("Weight must be less than 1000kg")
 
             return if (errors.isEmpty()) {
                 ValidationResult.success()

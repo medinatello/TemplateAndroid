@@ -3,11 +3,30 @@ package com.sortisplus.feature.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.PersonRemove
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,17 +39,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.sortisplus.core.data.DatabaseResult
 import com.sortisplus.core.data.Person
 import com.sortisplus.data.local.LocalProviders
 import com.sortisplus.core.ui.AppScaffold
 import com.sortisplus.core.ui.PrimaryButton
+import com.sortisplus.core.ui.MenuItemCard
+import com.sortisplus.core.ui.SectionHeader
+import com.sortisplus.core.ui.ScreenContainer
+import com.sortisplus.core.ui.SearchBar
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
+import com.sortisplus.core.designsystem.AppTheme
 import com.sortisplus.core.common.R as CommonR
 
+/**
+ * Home screen displaying the main welcome interface
+ * 
+ * Shows the application title, description and a button to navigate
+ * to the next screen. This is the entry point of the application.
+ * 
+ * @param onContinue Callback function executed when user taps continue button
+ */
 @Composable
 fun HomeScreen(onContinue: () -> Unit) {
     AppScaffold(title = stringResource(CommonR.string.home_title)) { padding ->
@@ -45,6 +79,14 @@ fun HomeScreen(onContinue: () -> Unit) {
     }
 }
 
+/**
+ * Details screen showing secondary content
+ * 
+ * Displays static information and provides navigation back to the previous screen.
+ * Used as a demonstration of navigation between screens.
+ * 
+ * @param onBack Callback function executed when user wants to return to previous screen
+ */
 @Composable
 fun DetailsScreen(onBack: () -> Unit) {
     AppScaffold(title = stringResource(CommonR.string.details_screen_title)) { padding ->
@@ -59,15 +101,85 @@ fun DetailsScreen(onBack: () -> Unit) {
     }
 }
 
+/**
+ * Main menu screen with modern Material 3 design
+ * 
+ * Displays organized sections with card-based navigation items.
+ * Features app information and easy access to key functionality.
+ * 
+ * @param onGreeting Callback function to navigate to greeting screen
+ * @param onCustomer Callback function to navigate to customer management section
+ */
 @Composable
 fun MenuScreen(onGreeting: () -> Unit, onCustomer: () -> Unit) {
     AppScaffold(title = stringResource(CommonR.string.menu_title)) { padding ->
-        Column(
-            modifier = Modifier.padding(padding).padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            PrimaryButton(text = stringResource(CommonR.string.menu_greeting), onClick = onGreeting)
-            PrimaryButton(text = stringResource(CommonR.string.menu_customer), onClick = onCustomer)
+        ScreenContainer {
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // App header with info
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(CommonR.string.app_description),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = stringResource(CommonR.string.version_info),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                
+                // Main section
+                SectionHeader(title = stringResource(CommonR.string.menu_section_main))
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.menu_greeting),
+                    subtitle = "Pantalla de ejemplo con saludo",
+                    icon = Icons.Default.Face,
+                    onClick = onGreeting
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Data management section
+                SectionHeader(title = stringResource(CommonR.string.menu_section_data))
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.menu_customer),
+                    subtitle = "Gestionar información de personas",
+                    icon = Icons.Default.Person,
+                    onClick = onCustomer
+                )
+                
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
     }
 }
@@ -85,6 +197,18 @@ fun GreetingScreen(onBack: () -> Unit) {
     }
 }
 
+/**
+ * Customer management menu with modern card-based design
+ * 
+ * Organized menu for person/customer data operations including
+ * viewing, creating, updating and deleting person records.
+ * 
+ * @param onList Navigate to person list screen
+ * @param onCreate Navigate to person creation screen  
+ * @param onDelete Navigate to person deletion screen
+ * @param onFind Navigate to person search screen
+ * @param onBack Navigate back to previous screen
+ */
 @Composable
 fun CustomerMenuScreen(
     onList: () -> Unit,
@@ -94,31 +218,109 @@ fun CustomerMenuScreen(
     onBack: () -> Unit
 ) {
     AppScaffold(title = stringResource(CommonR.string.customer_title)) { padding ->
-        Column(
-            modifier = Modifier.padding(padding).padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            PrimaryButton(text = stringResource(CommonR.string.customer_list_people), onClick = onList)
-            PrimaryButton(text = stringResource(CommonR.string.customer_create_person), onClick = onCreate)
-            PrimaryButton(text = stringResource(CommonR.string.customer_delete_person), onClick = onDelete)
-            PrimaryButton(text = stringResource(CommonR.string.customer_find_person), onClick = onFind)
-            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
+        ScreenContainer {
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Data management actions
+                SectionHeader(title = stringResource(CommonR.string.menu_section_data))
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.customer_list_people),
+                    subtitle = "Ver todas las personas registradas",
+                    icon = Icons.Default.List,
+                    onClick = onList
+                )
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.customer_create_person),
+                    subtitle = "Agregar nueva persona al sistema",
+                    icon = Icons.Default.PersonAdd,
+                    onClick = onCreate
+                )
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.customer_find_person),
+                    subtitle = "Buscar persona por ID",
+                    icon = Icons.Default.Search,
+                    onClick = onFind
+                )
+                
+                MenuItemCard(
+                    title = stringResource(CommonR.string.customer_delete_person),
+                    subtitle = "Eliminar persona del sistema",
+                    icon = Icons.Default.PersonRemove,
+                    onClick = onDelete
+                )
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                // Back button at bottom
+                PrimaryButton(
+                    text = stringResource(CommonR.string.button_back), 
+                    onClick = onBack,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                )
+            }
         }
     }
 }
 
+/**
+ * Screen displaying list of people with search functionality and theme toggle
+ * 
+ * Shows all people from the database with a search filter and theme switching capability.
+ * Includes real-time search filtering by first name or last name.
+ * 
+ * @param onBack Callback function to navigate back to previous screen
+ * @param isDarkTheme Current theme state (true for dark, false for light)
+ * @param onToggleTheme Callback function to toggle between light and dark theme
+ */
 @Composable
-fun PersonListScreen(onBack: () -> Unit) {
+fun PersonListScreen(
+    onBack: () -> Unit,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit
+) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personRepository(context) }
     val personsState = remember { mutableStateOf<List<Person>>(emptyList()) }
     LaunchedEffect(Unit) {
         repository.observeAll().collect { personsState.value = it }
     }
-    AppScaffold(title = stringResource(CommonR.string.person_list_title)) { padding ->
+    AppScaffold(
+        title = stringResource(CommonR.string.person_list_title),
+        actions = {
+            IconButton(onClick = onToggleTheme) {
+                if (isDarkTheme) {
+                    Icon(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                } else {
+                    Icon(Icons.Filled.DarkMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                }
+            }
+        }
+    ) { padding ->
         Column(modifier = Modifier.padding(padding).padding(16.dp)) {
+            // Modern search filter
+            var query by remember { mutableStateOf("") }
+            SearchBar(
+                query = query,
+                onQueryChange = { query = it },
+                placeholder = stringResource(CommonR.string.search_hint),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(personsState.value) { p ->
+                val filtered = personsState.value.filter { p ->
+                    val q = query.trim().lowercase()
+                    if (q.isEmpty()) true else
+                        p.firstName.lowercase().contains(q) || p.lastName.lowercase().contains(q)
+                }
+                items(filtered) { p ->
                     Text("#${p.id} - ${p.lastName}, ${p.firstName} | ${p.age} " +
                         stringResource(CommonR.string.years_unit) +
                         " | " + stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" +
@@ -133,8 +335,22 @@ fun PersonListScreen(onBack: () -> Unit) {
     }
 }
 
+/**
+ * Screen for creating new people with form validation
+ * 
+ * Provides a comprehensive form for entering person details with real-time validation.
+ * Includes fields for name, birth date, weight and handedness preference.
+ * 
+ * @param onBack Callback function to navigate back to previous screen
+ * @param isDarkTheme Current theme state (true for dark, false for light)
+ * @param onToggleTheme Callback function to toggle between light and dark theme
+ */
 @Composable
-fun PersonCreateScreen(onBack: () -> Unit) {
+fun PersonCreateScreen(
+    onBack: () -> Unit,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit
+) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personRepository(context) }
     var firstName by remember { mutableStateOf("") }
@@ -147,31 +363,42 @@ fun PersonCreateScreen(onBack: () -> Unit) {
     var isError by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Validación en tiempo real
+    // Real-time validation
     val firstNameError = when {
-        firstName.isBlank() -> stringResource(CommonR.string.label_first_name) + " es requerido"
-        firstName.length > 50 -> "Máximo 50 caracteres"
+        firstName.isBlank() -> stringResource(CommonR.string.label_first_name) + " " + stringResource(CommonR.string.error_field_required)
+        firstName.length > 50 -> stringResource(CommonR.string.error_max_50_chars)
     else -> null
     }
     
     val lastNameError = when {
-        lastName.isBlank() -> stringResource(CommonR.string.label_last_name) + " es requerido" 
-        lastName.length > 50 -> "Máximo 50 caracteres"
+        lastName.isBlank() -> stringResource(CommonR.string.label_last_name) + " " + stringResource(CommonR.string.error_field_required)
+        lastName.length > 50 -> stringResource(CommonR.string.error_max_50_chars)
     else -> null
     }
     
     val weightError = when {
-        weightStr.isBlank() -> stringResource(CommonR.string.label_weight) + " es requerido"
-        weightStr.toDoubleOrNull() == null -> "Debe ser un número válido"
-        (weightStr.toDoubleOrNull() ?: 0.0) <= 0 -> "Debe ser mayor a 0"
-        (weightStr.toDoubleOrNull() ?: 0.0) > 1000 -> "Debe ser menor a 1000kg"
+        weightStr.isBlank() -> stringResource(CommonR.string.label_weight) + " " + stringResource(CommonR.string.error_field_required)
+        weightStr.toDoubleOrNull() == null -> stringResource(CommonR.string.error_invalid_number)
+        (weightStr.toDoubleOrNull() ?: 0.0) <= 0 -> stringResource(CommonR.string.error_greater_than_zero)
+        (weightStr.toDoubleOrNull() ?: 0.0) > 1000 -> stringResource(CommonR.string.error_less_than_1000kg)
         else -> null
     }
 
     val isFormValid = firstNameError == null && lastNameError == null && 
                      weightError == null && birthDateStr.isNotBlank()
 
-    AppScaffold(title = stringResource(CommonR.string.person_create_title)) { padding ->
+    AppScaffold(
+        title = stringResource(CommonR.string.person_create_title),
+        actions = {
+            IconButton(onClick = onToggleTheme) {
+                if (isDarkTheme) {
+                    Icon(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                } else {
+                    Icon(Icons.Filled.DarkMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                }
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -249,7 +476,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                             birthDateStr.toLongOrNull() ?: System.currentTimeMillis()
                         }
                     } catch (e: Exception) {
-                        System.currentTimeMillis() - (25 * 365 * 24 * 60 * 60 * 1000L) // Default: 25 años atrás
+                        System.currentTimeMillis() - (25 * 365 * 24 * 60 * 60 * 1000L) // Default: 25 years ago
                     }
                     
                     val weight = weightStr.toDoubleOrNull() ?: 0.0
@@ -259,7 +486,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                             is DatabaseResult.Success -> {
                                 resultMessage = context.getString(CommonR.string.msg_person_created, result.data)
                                 isError = false
-                                // Limpiar formulario
+                                // Clear form
                                 firstName = ""
                                 lastName = ""
                                 birthDateStr = ""
@@ -291,7 +518,11 @@ fun PersonCreateScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun PersonDeleteScreen(onBack: () -> Unit) {
+fun PersonDeleteScreen(
+    onBack: () -> Unit,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit
+) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personRepository(context) }
     var idStr by remember { mutableStateOf("") }
@@ -300,7 +531,18 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    AppScaffold(title = stringResource(CommonR.string.person_delete_title)) { padding ->
+    AppScaffold(
+        title = stringResource(CommonR.string.person_delete_title),
+        actions = {
+            IconButton(onClick = onToggleTheme) {
+                if (isDarkTheme) {
+                    Icon(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                } else {
+                    Icon(Icons.Filled.DarkMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                }
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp), 
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -330,7 +572,7 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
                                 if (result.data) {
                                     resultMessage = context.getString(CommonR.string.msg_person_deleted)
                                     isError = false
-                                    idStr = "" // Limpiar campo
+                                    idStr = "" // Clear field
                                 } else {
                                     resultMessage = context.getString(CommonR.string.msg_person_not_found, id)
                                     isError = true
@@ -360,7 +602,11 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun PersonFindScreen(onBack: () -> Unit) {
+fun PersonFindScreen(
+    onBack: () -> Unit,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit
+) {
     val context = LocalContext.current
     val repository = remember { LocalProviders.personRepository(context) }
     var idStr by remember { mutableStateOf("") }
@@ -369,7 +615,18 @@ fun PersonFindScreen(onBack: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    AppScaffold(title = stringResource(CommonR.string.person_find_title)) { padding ->
+    AppScaffold(
+        title = stringResource(CommonR.string.person_find_title),
+        actions = {
+            IconButton(onClick = onToggleTheme) {
+                if (isDarkTheme) {
+                    Icon(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                } else {
+                    Icon(Icons.Filled.DarkMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))
+                }
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp), 
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -449,5 +706,74 @@ fun PersonFindScreen(onBack: () -> Unit) {
             
             PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
+    }
+}
+
+// ================================
+// COMPOSE PREVIEWS
+// ================================
+
+@Preview(name = "Home Screen Light")
+@Preview(name = "Home Screen Dark", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenPreview() {
+    AppTheme {
+        HomeScreen(onContinue = { })
+    }
+}
+
+@Preview(name = "Menu Screen Light")
+@Preview(name = "Menu Screen Dark", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun MenuScreenPreview() {
+    AppTheme {
+        MenuScreen(
+            onGreeting = { },
+            onCustomer = { }
+        )
+    }
+}
+
+@Preview(name = "Customer Menu Light")
+@Preview(name = "Customer Menu Dark", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CustomerMenuScreenPreview() {
+    AppTheme {
+        CustomerMenuScreen(
+            onList = { },
+            onCreate = { },
+            onDelete = { },
+            onFind = { },
+            onBack = { }
+        )
+    }
+}
+
+@Preview(name = "Greeting Screen")
+@Composable
+fun GreetingScreenPreview() {
+    AppTheme {
+        GreetingScreen(onBack = { })
+    }
+}
+
+@Preview(name = "Details Screen")
+@Composable
+fun DetailsScreenPreview() {
+    AppTheme {
+        DetailsScreen(onBack = { })
+    }
+}
+
+@Preview(name = "Person Create Light")
+@Preview(name = "Person Create Dark", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PersonCreateScreenPreview() {
+    AppTheme {
+        PersonCreateScreen(
+            onBack = { },
+            isDarkTheme = false,
+            onToggleTheme = { }
+        )
     }
 }
