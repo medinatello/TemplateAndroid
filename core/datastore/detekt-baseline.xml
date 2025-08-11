@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>FinalNewline:SettingsDataStore.kt$com.sortisplus.core.datastore.SettingsDataStore.kt</ID>
+    <ID>NewLineAtEndOfFile:SettingsDataStore.kt$com.sortisplus.core.datastore.SettingsDataStore.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:DatabaseResultTest.kt$DatabaseResultTest$("Should preserve IllegalArgumentException", result1.exception is IllegalArgumentException)</ID>
+    <ID>ArgumentListWrapping:DatabaseResultTest.kt$DatabaseResultTest$("Should preserve IllegalStateException", result2.exception is IllegalStateException)</ID>
+    <ID>ArgumentListWrapping:DatabaseResultTest.kt$DatabaseResultTest$("Should preserve first exception message", "Invalid argument", result1.exception.message)</ID>
+    <ID>ArgumentListWrapping:DatabaseResultTest.kt$DatabaseResultTest$("Should preserve second exception message", "Invalid state", result2.exception.message)</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain first name error", result.errors.any { it.contains("First name cannot be empty") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain first name length error", result.errors.any { it.contains("First name cannot have more than 50 characters") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain future date error", result.errors.any { it.contains("Birth date cannot be in the future") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain invalid date error", result.errors.any { it.contains("Birth date must be valid") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain last name error", result.errors.any { it.contains("Last name cannot be empty") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain last name length error", result.errors.any { it.contains("Last name cannot have more than 50 characters") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain weight error", resultZero.errors.any { it.contains("Weight must be greater than 0") })</ID>
+    <ID>ArgumentListWrapping:PersonTest.kt$PersonTest$("Should contain weight limit error", resultHigh.errors.any { it.contains("Weight must be less than 1000kg") })</ID>
+    <ID>FinalNewline:DatabaseResultTest.kt$com.sortisplus.core.data.DatabaseResultTest.kt</ID>
+    <ID>FinalNewline:PersonTest.kt$com.sortisplus.core.data.PersonTest.kt</ID>
+    <ID>FinalNewline:ValidationResultTest.kt$com.sortisplus.core.data.ValidationResultTest.kt</ID>
+    <ID>LongParameterList:Contracts.kt$PersonRepository$( id: Long, firstName: String, lastName: String, birthDateMillis: Long, weightKg: Double, isLeftHanded: Boolean )</ID>
+    <ID>MagicNumber:Contracts.kt$Person$1000</ID>
+    <ID>MagicNumber:Contracts.kt$Person$24</ID>
+    <ID>MagicNumber:Contracts.kt$Person$365.25</ID>
+    <ID>MagicNumber:Contracts.kt$Person$60</ID>
+    <ID>MagicNumber:Contracts.kt$Person.Companion$1000</ID>
+    <ID>MagicNumber:Contracts.kt$Person.Companion$50</ID>
+    <ID>NewLineAtEndOfFile:DatabaseResultTest.kt$com.sortisplus.core.data.DatabaseResultTest.kt</ID>
+    <ID>NewLineAtEndOfFile:PersonTest.kt$com.sortisplus.core.data.PersonTest.kt</ID>
+    <ID>NewLineAtEndOfFile:ValidationResultTest.kt$com.sortisplus.core.data.ValidationResultTest.kt</ID>
+    <ID>NoTrailingSpaces:DatabaseResultTest.kt$DatabaseResultTest$ </ID>
+    <ID>NoTrailingSpaces:PersonTest.kt$PersonTest$ </ID>
+    <ID>NoTrailingSpaces:ValidationResultTest.kt$ValidationResultTest$ </ID>
+    <ID>NoUnusedImports:DatabaseResultTest.kt$com.sortisplus.core.data.DatabaseResultTest.kt</ID>
+    <ID>SpreadOperator:Contracts.kt$Person.Companion$(*errors.toTypedArray())</ID>
+    <ID>Wrapping:DatabaseResultTest.kt$DatabaseResultTest$(</ID>
+    <ID>Wrapping:PersonTest.kt$PersonTest$(</ID>
+  </CurrentIssues>
+</SmellBaseline>

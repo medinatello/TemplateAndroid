@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>FinalNewline:ExampleUnitTest.kt$com.sortisplus.templateandroid.ExampleUnitTest.kt</ID>
+    <ID>ImportOrdering:ExampleUnitTest.kt$import org.junit.Test import org.junit.Assert.*</ID>
+    <ID>ImportOrdering:MainActivity.kt$import android.os.Bundle import androidx.activity.ComponentActivity import androidx.activity.compose.setContent import androidx.activity.enableEdgeToEdge import androidx.compose.runtime.Composable import androidx.navigation.compose.NavHost import androidx.navigation.compose.composable import androidx.navigation.compose.rememberNavController import com.sortisplus.core.common.Route import com.sortisplus.core.designsystem.AppTheme import com.sortisplus.data.local.LocalProviders import com.sortisplus.feature.home.CustomerMenuScreen import com.sortisplus.feature.home.DetailsScreen import com.sortisplus.feature.home.HomeScreen import com.sortisplus.feature.home.MenuScreen import com.sortisplus.feature.home.PersonCreateScreen import com.sortisplus.feature.home.PersonDeleteScreen import com.sortisplus.feature.home.PersonFindScreen import com.sortisplus.feature.home.PersonListScreen import com.sortisplus.feature.home.GreetingScreen import androidx.compose.runtime.getValue import androidx.compose.runtime.collectAsState import androidx.compose.runtime.remember import androidx.compose.runtime.rememberCoroutineScope import kotlinx.coroutines.launch</ID>
+    <ID>LongMethod:MainActivity.kt$@Composable fun TemplateAndroidApp()</ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$com.sortisplus.templateandroid.ExampleUnitTest.kt</ID>
+    <ID>NoTrailingSpaces:MainActivity.kt$MainActivity$ </ID>
+    <ID>NoWildcardImports:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
+  </CurrentIssues>
+</SmellBaseline>
