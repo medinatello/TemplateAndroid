@@ -21,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.sortisplus.core.data.DatabaseResult
 import com.sortisplus.core.data.Person
 import com.sortisplus.data.local.LocalProviders
@@ -28,57 +29,58 @@ import com.sortisplus.core.ui.AppScaffold
 import com.sortisplus.core.ui.PrimaryButton
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
+import com.sortisplus.core.common.R as CommonR
 
 @Composable
 fun HomeScreen(onContinue: () -> Unit) {
-    AppScaffold(title = "Home") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.home_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Pantalla inicial de ejemplo")
-            PrimaryButton(text = "Ir al Menú", onClick = onContinue)
+            Text(stringResource(CommonR.string.home_description))
+            PrimaryButton(text = stringResource(CommonR.string.home_go_menu), onClick = onContinue)
         }
     }
 }
 
 @Composable
 fun DetailsScreen(onBack: () -> Unit) {
-    AppScaffold(title = "Detalles") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.details_screen_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Detalle de ejemplo")
-            PrimaryButton(text = "Volver", onClick = onBack)
+            Text(stringResource(CommonR.string.details_screen_message))
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
 
 @Composable
 fun MenuScreen(onGreeting: () -> Unit, onCustomer: () -> Unit) {
-    AppScaffold(title = "Menú") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.menu_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PrimaryButton(text = "Saludo", onClick = onGreeting)
-            PrimaryButton(text = "Cliente", onClick = onCustomer)
+            PrimaryButton(text = stringResource(CommonR.string.menu_greeting), onClick = onGreeting)
+            PrimaryButton(text = stringResource(CommonR.string.menu_customer), onClick = onCustomer)
         }
     }
 }
 
 @Composable
 fun GreetingScreen(onBack: () -> Unit) {
-    AppScaffold(title = "Saludo") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.greeting_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("¡Hola! Esta es la pantalla de saludo.")
-            PrimaryButton(text = "Volver", onClick = onBack)
+            Text(stringResource(CommonR.string.greeting_message))
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
@@ -91,16 +93,16 @@ fun CustomerMenuScreen(
     onFind: () -> Unit,
     onBack: () -> Unit
 ) {
-    AppScaffold(title = "Cliente") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.customer_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PrimaryButton(text = "Lista de Personas", onClick = onList)
-            PrimaryButton(text = "Crear / Guardar Persona", onClick = onCreate)
-            PrimaryButton(text = "Eliminar Persona", onClick = onDelete)
-            PrimaryButton(text = "Buscar Persona por ID", onClick = onFind)
-            PrimaryButton(text = "Volver", onClick = onBack)
+            PrimaryButton(text = stringResource(CommonR.string.customer_list_people), onClick = onList)
+            PrimaryButton(text = stringResource(CommonR.string.customer_create_person), onClick = onCreate)
+            PrimaryButton(text = stringResource(CommonR.string.customer_delete_person), onClick = onDelete)
+            PrimaryButton(text = stringResource(CommonR.string.customer_find_person), onClick = onFind)
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
@@ -113,14 +115,20 @@ fun PersonListScreen(onBack: () -> Unit) {
     LaunchedEffect(Unit) {
         repository.observeAll().collect { personsState.value = it }
     }
-    AppScaffold(title = "Personas") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.person_list_title)) { padding ->
         Column(modifier = Modifier.padding(padding).padding(16.dp)) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(personsState.value) { p ->
-                    Text("#${p.id} - ${p.lastName}, ${p.firstName} | ${p.age} años | Peso: ${p.weightKg}kg | Zurdo: ${if (p.isLeftHanded) "Sí" else "No"}")
+                    Text("#${p.id} - ${p.lastName}, ${p.firstName} | ${p.age} " +
+                        stringResource(CommonR.string.years_unit) +
+                        " | " + stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" +
+                        stringResource(CommonR.string.kg_unit) +
+                        " | " + stringResource(CommonR.string.label_left_handed) + ": " +
+                        if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no)
+                    )
                 }
             }
-            PrimaryButton(text = "Volver", onClick = onBack, modifier = Modifier.padding(top = 16.dp))
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack, modifier = Modifier.padding(top = 16.dp))
         }
     }
 }
@@ -141,19 +149,19 @@ fun PersonCreateScreen(onBack: () -> Unit) {
 
     // Validación en tiempo real
     val firstNameError = when {
-        firstName.isBlank() -> "El nombre es requerido"
+        firstName.isBlank() -> stringResource(CommonR.string.label_first_name) + " es requerido"
         firstName.length > 50 -> "Máximo 50 caracteres"
-        else -> null
+    else -> null
     }
     
     val lastNameError = when {
-        lastName.isBlank() -> "El apellido es requerido" 
+        lastName.isBlank() -> stringResource(CommonR.string.label_last_name) + " es requerido" 
         lastName.length > 50 -> "Máximo 50 caracteres"
-        else -> null
+    else -> null
     }
     
     val weightError = when {
-        weightStr.isBlank() -> "El peso es requerido"
+        weightStr.isBlank() -> stringResource(CommonR.string.label_weight) + " es requerido"
         weightStr.toDoubleOrNull() == null -> "Debe ser un número válido"
         (weightStr.toDoubleOrNull() ?: 0.0) <= 0 -> "Debe ser mayor a 0"
         (weightStr.toDoubleOrNull() ?: 0.0) > 1000 -> "Debe ser menor a 1000kg"
@@ -163,7 +171,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
     val isFormValid = firstNameError == null && lastNameError == null && 
                      weightError == null && birthDateStr.isNotBlank()
 
-    AppScaffold(title = "Crear Persona") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.person_create_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -172,7 +180,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = firstName, 
                 onValueChange = { firstName = it },
-                label = { Text("Nombre") },
+                label = { Text(stringResource(CommonR.string.label_first_name)) },
                 supportingText = firstNameError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
                 isError = firstNameError != null,
                 modifier = Modifier.fillMaxWidth()
@@ -182,7 +190,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = lastName,
                 onValueChange = { lastName = it },
-                label = { Text("Apellido") },
+                label = { Text(stringResource(CommonR.string.label_last_name)) },
                 supportingText = lastNameError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
                 isError = lastNameError != null,
                 modifier = Modifier.fillMaxWidth()
@@ -192,8 +200,8 @@ fun PersonCreateScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = birthDateStr,
                 onValueChange = { birthDateStr = it },
-                label = { Text("Fecha Nacimiento") },
-                supportingText = { Text("Formato: aaaa-mm-dd (ej: 1990-05-15)") },
+                label = { Text(stringResource(CommonR.string.label_birth_date)) },
+                supportingText = { Text(stringResource(CommonR.string.label_birth_date_hint)) },
                 modifier = Modifier.fillMaxWidth()
             )
             
@@ -201,7 +209,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = weightStr,
                 onValueChange = { weightStr = it },
-                label = { Text("Peso (kg)") },
+                label = { Text(stringResource(CommonR.string.label_weight_kg)) },
                 supportingText = weightError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
                 isError = weightError != null,
                 modifier = Modifier.fillMaxWidth()
@@ -213,15 +221,15 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Checkbox(checked = isLeftHanded, onCheckedChange = { isLeftHanded = it })
-                Text("Es zurdo")
+                Text(stringResource(CommonR.string.label_is_left_handed))
             }
             
             // Botón guardar mejorado
             PrimaryButton(
-                text = if (isLoading) "Guardando..." else "Guardar",
+                text = if (isLoading) stringResource(CommonR.string.button_saving) else stringResource(CommonR.string.button_save),
                 onClick = {
                     if (!isFormValid) {
-                        resultMessage = "Por favor corrige los errores"
+                        resultMessage = stringResource(CommonR.string.msg_fix_errors)
                         isError = true
                         return@PrimaryButton
                     }
@@ -249,7 +257,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                     scope.launch {
                         when (val result = repository.create(firstName, lastName, birthDate, weight, isLeftHanded)) {
                             is DatabaseResult.Success -> {
-                                resultMessage = "✅ Persona creada exitosamente con ID ${result.data}"
+                                resultMessage = stringResource(CommonR.string.msg_person_created, result.data)
                                 isError = false
                                 // Limpiar formulario
                                 firstName = ""
@@ -259,7 +267,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                                 isLeftHanded = false
                             }
                             is DatabaseResult.Error -> {
-                                resultMessage = "❌ Error: ${result.exception.message}"
+                                resultMessage = stringResource(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
                                 isError = true
                             }
                         }
@@ -277,7 +285,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                 )
             }
             
-            PrimaryButton(text = "Volver", onClick = onBack)
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
@@ -292,7 +300,7 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    AppScaffold(title = "Eliminar Persona") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.person_delete_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp), 
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -300,17 +308,17 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = idStr, 
                 onValueChange = { idStr = it }, 
-                label = { Text("ID de la Persona") },
-                supportingText = { Text("Ingresa el ID numérico de la persona a eliminar") },
+                label = { Text(stringResource(CommonR.string.label_person_id)) },
+                supportingText = { Text(stringResource(CommonR.string.hint_enter_person_id)) },
                 modifier = Modifier.fillMaxWidth()
             )
             
             PrimaryButton(
-                text = if (isLoading) "Eliminando..." else "Eliminar",
+                text = if (isLoading) stringResource(CommonR.string.button_deleting) else stringResource(CommonR.string.button_delete),
                 onClick = {
                     val id = idStr.toLongOrNull()
                     if (id == null) {
-                        resultMessage = "❌ ID inválido. Debe ser un número"
+                        resultMessage = stringResource(CommonR.string.msg_invalid_id)
                         isError = true
                         return@PrimaryButton
                     }
@@ -320,16 +328,16 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
                         when (val result = repository.delete(id)) {
                             is DatabaseResult.Success -> {
                                 if (result.data) {
-                                    resultMessage = "✅ Persona eliminada exitosamente"
+                                    resultMessage = stringResource(CommonR.string.msg_person_deleted)
                                     isError = false
                                     idStr = "" // Limpiar campo
                                 } else {
-                                    resultMessage = "❌ No se encontró persona con ID $id"
+                                    resultMessage = stringResource(CommonR.string.msg_person_not_found, id)
                                     isError = true
                                 }
                             }
                             is DatabaseResult.Error -> {
-                                resultMessage = "❌ Error: ${result.exception.message}"
+                                resultMessage = stringResource(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
                                 isError = true
                             }
                         }
@@ -346,7 +354,7 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
                 )
             }
             
-            PrimaryButton(text = "Volver", onClick = onBack)
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
@@ -361,7 +369,7 @@ fun PersonFindScreen(onBack: () -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    AppScaffold(title = "Buscar Persona") { padding ->
+    AppScaffold(title = stringResource(CommonR.string.person_find_title)) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(16.dp), 
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -369,17 +377,17 @@ fun PersonFindScreen(onBack: () -> Unit) {
             OutlinedTextField(
                 value = idStr, 
                 onValueChange = { idStr = it }, 
-                label = { Text("ID de la Persona") },
-                supportingText = { Text("Ingresa el ID numérico de la persona a buscar") },
+                label = { Text(stringResource(CommonR.string.label_person_id)) },
+                supportingText = { Text(stringResource(CommonR.string.hint_enter_person_id_find)) },
                 modifier = Modifier.fillMaxWidth()
             )
             
             PrimaryButton(
-                text = if (isLoading) "Buscando..." else "Buscar",
+                text = if (isLoading) stringResource(CommonR.string.button_searching) else stringResource(CommonR.string.button_search),
                 onClick = {
                     val id = idStr.toLongOrNull()
                     if (id == null) {
-                        errorMessage = "❌ ID inválido. Debe ser un número"
+                        errorMessage = stringResource(CommonR.string.msg_invalid_id)
                         person = null
                         return@PrimaryButton
                     }
@@ -427,19 +435,19 @@ fun PersonFindScreen(onBack: () -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "✅ Persona encontrada:",
+                        text = stringResource(CommonR.string.msg_person_found),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text("ID: ${p.id}")
-                    Text("Nombre: ${p.firstName} ${p.lastName}")
-                    Text("Edad: ${p.age} años")
-                    Text("Peso: ${p.weightKg}kg")
-                    Text("Zurdo: ${if (p.isLeftHanded) "Sí" else "No"}")
+                    Text(stringResource(CommonR.string.label_id) + ": ${p.id}")
+                    Text(stringResource(CommonR.string.label_name) + ": ${p.firstName} ${p.lastName}")
+                    Text(stringResource(CommonR.string.label_age) + ": ${p.age} " + stringResource(CommonR.string.years_unit))
+                    Text(stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" + stringResource(CommonR.string.kg_unit))
+                    Text(stringResource(CommonR.string.label_left_handed) + ": " + (if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no)))
                 }
             }
             
-            PrimaryButton(text = "Volver", onClick = onBack)
+            PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack)
         }
     }
 }
