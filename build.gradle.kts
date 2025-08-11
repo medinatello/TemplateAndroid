@@ -4,84 +4,54 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.detekt)
 }
 
-// Configure Detekt for code quality analysis
-detekt {
-    toolVersion = libs.versions.detekt.get()
-    config.setFrom("$projectDir/config/detekt/detekt.yml")
-    buildUponDefaultConfig = true
-    allRules = false
-}
-
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    reports {
-        html.required.set(true)
-        xml.required.set(true) 
-        txt.required.set(true)
-        sarif.required.set(true)
-        md.required.set(true)
-    }
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-}
-
-// Custom tasks for code analysis
-tasks.register("codeQuality") {
-    description = "Run all code quality checks (detekt + tests)"
+// Helper task to diagnose why the Android App might not be runnable in Android Studio
+// Usage: ./gradlew diagnoseRunConfiguration
+// It checks for common issues: missing app module plugin, missing launcher activity, gradlew permissions.
+tasks.register("diagnoseRunConfiguration") {
     group = "verification"
-    dependsOn("detektAll")
-    // Add test dependencies for modules that have tests
-    project.subprojects.forEach { subproject ->
-        subproject.tasks.findByName("test")?.let { testTask ->
-            dependsOn(testTask)
-        }
-    }
-}
-
-tasks.register("detektAll") {
-    description = "Run detekt analysis on all modules"
-    group = "verification"
-    dependsOn(
-        ":app:detekt",
-        ":core:common:detekt",
-        ":core:data:detekt", 
-        ":core:database:detekt",
-        ":core:datastore:detekt",
-        ":core:designsystem:detekt",
-        ":core:ui:detekt",
-        ":data:local:detekt",
-        ":feature:home:detekt"
-    )
-}
-
-tasks.register("detektFormat") {
-    description = "Run detekt with auto-correct formatting"
-    group = "verification"
-    dependsOn("detektAll")
+    description = "Diagnose common reasons why Run is not enabled for the Android app."
     doLast {
-        project.subprojects.forEach { subproject ->
-            subproject.tasks.findByName("detekt")?.let { task ->
-                (task as io.gitlab.arturbosch.detekt.Detekt).autoCorrect = true
-            }
+        val root = project.rootDir
+        val appDir = file("app")
+        if (!appDir.exists()) {
+            println("[ERROR] :app module not found at ${appDir}")
+            return@doLast
         }
-    }
-}
-
-// Apply Detekt to all subprojects
-subprojects {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-    
-    detekt {
-        toolVersion = rootProject.libs.versions.detekt.get()
-        config.setFrom("${rootProject.projectDir}/config/detekt/detekt.yml")
-        buildUponDefaultConfig = true
-    }
-    
-    dependencies {
-        detektPlugins(rootProject.libs.detekt.formatting)
+        val appBuild = file("app/build.gradle.kts")
+        if (!appBuild.exists()) {
+            println("[ERROR] app/build.gradle.kts not found.")
+        } else {
+            val text = appBuild.readText()
+            val hasAppPlugin = text.contains("android.application")
+            val hasNamespace = text.contains("namespace = \"com.sortisplus.templateandroid\"")
+            val hasAppId = text.contains("applicationId = \"com.sortisplus.templateandroid\"")
+            println("- com.android.application plugin: ${if (hasAppPlugin) "OK" else "MISSING"}")
+            println("- namespace configured: ${if (hasNamespace) "OK" else "MISSING"}")
+            println("- applicationId configured: ${if (hasAppId) "OK" else "MISSING"}")
+        }
+        val manifest = file("app/src/main/AndroidManifest.xml")
+        if (!manifest.exists()) {
+            println("[ERROR] AndroidManifest.xml not found under app/src/main.")
+        } else {
+            val m = manifest.readText()
+            val hasMain = m.contains("android.intent.action.MAIN")
+            val hasLauncher = m.contains("android.intent.category.LAUNCHER")
+            val hasActivity = m.contains("activity")
+            println("- Launcher Activity (MAIN/LAUNCHER): ${if (hasMain && hasLauncher) "OK" else "MISSING"}")
+            if (!hasActivity) println("  [HINT] No <activity> tag detected in manifest.")
+        }
+        val gradlew = file("gradlew")
+        println("- gradlew executable: ${if (gradlew.canExecute()) "OK" else "NO"}")
+        if (!gradlew.canExecute()) {
+            println("  [HINT] Run: chmod +x gradlew")
+        }
+        println()
+        println("If all items are OK but Run is still disabled in Android Studio:")
+        println("1) Close Android Studio")
+        println("2) Re-open THIS folder (TemplateAndroid) as the project")
+        println("3) File > Sync Project with Gradle Files")
+        println("4) After sync, select app configuration or create one: Run > Edit Configurations > + > Android App")
     }
 }

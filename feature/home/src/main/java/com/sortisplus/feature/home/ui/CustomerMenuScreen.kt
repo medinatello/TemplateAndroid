@@ -25,12 +25,12 @@ import com.sortisplus.core.common.R as CommonR
 
 /**
  * Customer management menu with modern card-based design
- * 
+ *
  * Organized menu for person/customer data operations including
  * viewing, creating, updating and deleting person records.
- * 
+ *
  * @param onList Navigate to person list screen
- * @param onCreate Navigate to person creation screen  
+ * @param onCreate Navigate to person creation screen
  * @param onDelete Navigate to person deletion screen
  * @param onFind Navigate to person search screen
  * @param onBack Navigate back to previous screen
@@ -53,40 +53,40 @@ fun CustomerMenuScreen(
             ) {
                 // Data management actions
                 SectionHeader(title = stringResource(CommonR.string.menu_section_data))
-                
+
                 MenuItemCard(
                     title = stringResource(CommonR.string.customer_list_people),
                     subtitle = "Ver todas las personas registradas",
                     icon = Icons.Default.List,
                     onClick = onList
                 )
-                
+
                 MenuItemCard(
                     title = stringResource(CommonR.string.customer_create_person),
                     subtitle = "Agregar nueva persona al sistema",
                     icon = Icons.Default.PersonAdd,
                     onClick = onCreate
                 )
-                
+
                 MenuItemCard(
                     title = stringResource(CommonR.string.customer_find_person),
                     subtitle = "Buscar persona por ID",
                     icon = Icons.Default.Search,
                     onClick = onFind
                 )
-                
+
                 MenuItemCard(
                     title = stringResource(CommonR.string.customer_delete_person),
                     subtitle = "Eliminar persona del sistema",
                     icon = Icons.Default.PersonRemove,
                     onClick = onDelete
                 )
-                
+
                 Spacer(modifier = Modifier.weight(1f))
-                
+
                 // Back button at bottom
                 PrimaryButton(
-                    text = stringResource(CommonR.string.button_back), 
+                    text = stringResource(CommonR.string.button_back),
                     onClick = onBack,
                     modifier = Modifier
                         .fillMaxWidth()

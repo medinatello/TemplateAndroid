@@ -31,15 +31,6 @@ import com.sortisplus.core.ui.ScreenContainer
 import com.sortisplus.core.ui.SectionHeader
 import com.sortisplus.core.common.R as CommonR
 
-/**
- * Main menu screen with modern Material 3 design
- * 
- * Displays organized sections with card-based navigation items.
- * Features app information and easy access to key functionality.
- * 
- * @param onGreeting Callback function to navigate to greeting screen
- * @param onCustomer Callback function to navigate to customer management section
- */
 @Composable
 fun MenuScreen(onGreeting: () -> Unit, onCustomer: () -> Unit) {
     AppScaffold(title = stringResource(CommonR.string.menu_title)) { padding ->
@@ -50,73 +41,66 @@ fun MenuScreen(onGreeting: () -> Unit, onCustomer: () -> Unit) {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // App header with info
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(CommonR.string.app_description),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = stringResource(CommonR.string.version_info),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-                
-                // Main section
+                MenuHeader()
+                Spacer(modifier = Modifier.height(16.dp))
                 SectionHeader(title = stringResource(CommonR.string.menu_section_main))
-                
                 MenuItemCard(
                     title = stringResource(CommonR.string.menu_greeting),
                     subtitle = "Pantalla de ejemplo con saludo",
                     icon = Icons.Default.Face,
                     onClick = onGreeting
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
-                // Data management section
                 SectionHeader(title = stringResource(CommonR.string.menu_section_data))
-                
                 MenuItemCard(
                     title = stringResource(CommonR.string.menu_customer),
                     subtitle = "Gestionar información de personas",
                     icon = Icons.Default.Person,
                     onClick = onCustomer
                 )
-                
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
 }
 
-// ================================
-// COMPOSE PREVIEWS
-// ================================
+@Composable
+private fun MenuHeader() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.Home,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(CommonR.string.app_description),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = stringResource(CommonR.string.version_info),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @Preview(name = "Menu Screen Light")
 @Preview(name = "Menu Screen Dark", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)

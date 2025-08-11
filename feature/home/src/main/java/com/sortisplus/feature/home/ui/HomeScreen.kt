@@ -3,7 +3,6 @@ package com.sortisplus.feature.home.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,10 +17,10 @@ import com.sortisplus.core.common.R as CommonR
 
 /**
  * Home screen displaying the main welcome interface
- * 
+ *
  * Shows the application title, description and a button to navigate
  * to the next screen. This is the entry point of the application.
- * 
+ *
  * @param onContinue Callback function executed when user taps continue button
  */
 @Composable
@@ -40,10 +39,10 @@ fun HomeScreen(onContinue: () -> Unit) {
 
 /**
  * Details screen showing secondary content
- * 
+ *
  * Displays static information and provides navigation back to the previous screen.
  * Used as a demonstration of navigation between screens.
- * 
+ *
  * @param onBack Callback function executed when user wants to return to previous screen
  */
 @Composable
