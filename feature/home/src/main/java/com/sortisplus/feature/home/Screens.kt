@@ -40,7 +40,7 @@ fun HomeScreen(onContinue: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(stringResource(CommonR.string.home_description))
-            PrimaryButton(text = stringResource(CommonR.string.home_go_menu), onClick = onContinue)
+            PrimaryButton(text = stringResource(CommonR.string.button_continue), onClick = onContinue)
         }
     }
 }
@@ -229,7 +229,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                 text = if (isLoading) stringResource(CommonR.string.button_saving) else stringResource(CommonR.string.button_save),
                 onClick = {
                     if (!isFormValid) {
-                        resultMessage = stringResource(CommonR.string.msg_fix_errors)
+                        resultMessage = context.getString(CommonR.string.msg_fix_errors)
                         isError = true
                         return@PrimaryButton
                     }
@@ -257,7 +257,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                     scope.launch {
                         when (val result = repository.create(firstName, lastName, birthDate, weight, isLeftHanded)) {
                             is DatabaseResult.Success -> {
-                                resultMessage = stringResource(CommonR.string.msg_person_created, result.data)
+                                resultMessage = context.getString(CommonR.string.msg_person_created, result.data)
                                 isError = false
                                 // Limpiar formulario
                                 firstName = ""
@@ -267,7 +267,7 @@ fun PersonCreateScreen(onBack: () -> Unit) {
                                 isLeftHanded = false
                             }
                             is DatabaseResult.Error -> {
-                                resultMessage = stringResource(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
+                                resultMessage = context.getString(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
                                 isError = true
                             }
                         }
@@ -318,7 +318,7 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
                 onClick = {
                     val id = idStr.toLongOrNull()
                     if (id == null) {
-                        resultMessage = stringResource(CommonR.string.msg_invalid_id)
+                        resultMessage = context.getString(CommonR.string.msg_invalid_id)
                         isError = true
                         return@PrimaryButton
                     }
@@ -328,16 +328,16 @@ fun PersonDeleteScreen(onBack: () -> Unit) {
                         when (val result = repository.delete(id)) {
                             is DatabaseResult.Success -> {
                                 if (result.data) {
-                                    resultMessage = stringResource(CommonR.string.msg_person_deleted)
+                                    resultMessage = context.getString(CommonR.string.msg_person_deleted)
                                     isError = false
                                     idStr = "" // Limpiar campo
                                 } else {
-                                    resultMessage = stringResource(CommonR.string.msg_person_not_found, id)
+                                    resultMessage = context.getString(CommonR.string.msg_person_not_found, id)
                                     isError = true
                                 }
                             }
                             is DatabaseResult.Error -> {
-                                resultMessage = stringResource(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
+                                resultMessage = context.getString(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
                                 isError = true
                             }
                         }
@@ -387,7 +387,7 @@ fun PersonFindScreen(onBack: () -> Unit) {
                 onClick = {
                     val id = idStr.toLongOrNull()
                     if (id == null) {
-                        errorMessage = stringResource(CommonR.string.msg_invalid_id)
+                        errorMessage = context.getString(CommonR.string.msg_invalid_id)
                         person = null
                         return@PrimaryButton
                     }
@@ -403,12 +403,12 @@ fun PersonFindScreen(onBack: () -> Unit) {
                                     person = result.data
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "❌ No se encontró persona con ID $id"
+                                    errorMessage = context.getString(CommonR.string.msg_person_not_found, id)
                                     person = null
                                 }
                             }
                             is DatabaseResult.Error -> {
-                                errorMessage = "❌ Error: ${result.exception.message}"
+                                errorMessage = context.getString(CommonR.string.msg_error_with_reason, result.exception.message ?: "")
                                 person = null
                             }
                         }
