@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sortisplus.core.data.DatabaseResult
-import com.sortisplus.core.data.Persona
+import com.sortisplus.core.data.Person
 import com.sortisplus.data.local.LocalProviders
 import com.sortisplus.core.ui.AppScaffold
 import com.sortisplus.core.ui.PrimaryButton
@@ -58,20 +58,20 @@ fun DetailsScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun MenuScreen(onSaludo: () -> Unit, onCliente: () -> Unit) {
+fun MenuScreen(onGreeting: () -> Unit, onCustomer: () -> Unit) {
     AppScaffold(title = "Menú") { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PrimaryButton(text = "Saludo", onClick = onSaludo)
-            PrimaryButton(text = "Cliente", onClick = onCliente)
+            PrimaryButton(text = "Saludo", onClick = onGreeting)
+            PrimaryButton(text = "Cliente", onClick = onCustomer)
         }
     }
 }
 
 @Composable
-fun SaludoScreen(onBack: () -> Unit) {
+fun GreetingScreen(onBack: () -> Unit) {
     AppScaffold(title = "Saludo") { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp),
@@ -84,11 +84,11 @@ fun SaludoScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun ClienteMenuScreen(
-    onLista: () -> Unit,
-    onCrear: () -> Unit,
-    onEliminar: () -> Unit,
-    onBuscar: () -> Unit,
+fun CustomerMenuScreen(
+    onList: () -> Unit,
+    onCreate: () -> Unit,
+    onDelete: () -> Unit,
+    onFind: () -> Unit,
     onBack: () -> Unit
 ) {
     AppScaffold(title = "Cliente") { padding ->
@@ -96,28 +96,28 @@ fun ClienteMenuScreen(
             modifier = Modifier.padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            PrimaryButton(text = "Lista de Personas", onClick = onLista)
-            PrimaryButton(text = "Crear / Guardar Persona", onClick = onCrear)
-            PrimaryButton(text = "Eliminar Persona", onClick = onEliminar)
-            PrimaryButton(text = "Buscar Persona por ID", onClick = onBuscar)
+            PrimaryButton(text = "Lista de Personas", onClick = onList)
+            PrimaryButton(text = "Crear / Guardar Persona", onClick = onCreate)
+            PrimaryButton(text = "Eliminar Persona", onClick = onDelete)
+            PrimaryButton(text = "Buscar Persona por ID", onClick = onFind)
             PrimaryButton(text = "Volver", onClick = onBack)
         }
     }
 }
 
 @Composable
-fun PersonaListScreen(onBack: () -> Unit) {
+fun PersonListScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val repository = remember { LocalProviders.personaRepository(context) }
-    val personasState = remember { mutableStateOf<List<Persona>>(emptyList()) }
+    val repository = remember { LocalProviders.personRepository(context) }
+    val personsState = remember { mutableStateOf<List<Person>>(emptyList()) }
     LaunchedEffect(Unit) {
-        repository.observeAll().collect { personasState.value = it }
+        repository.observeAll().collect { personsState.value = it }
     }
     AppScaffold(title = "Personas") { padding ->
         Column(modifier = Modifier.padding(padding).padding(16.dp)) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(personasState.value) { p ->
-                    Text("#${p.id} - ${p.apellido}, ${p.nombre} | ${p.edad} años | Peso: ${p.peso}kg | Zurdo: ${if (p.esZurdo) "Sí" else "No"}")
+                items(personsState.value) { p ->
+                    Text("#${p.id} - ${p.lastName}, ${p.firstName} | ${p.age} años | Peso: ${p.weightKg}kg | Zurdo: ${if (p.isLeftHanded) "Sí" else "No"}")
                 }
             }
             PrimaryButton(text = "Volver", onClick = onBack, modifier = Modifier.padding(top = 16.dp))
@@ -126,42 +126,42 @@ fun PersonaListScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun PersonaCreateScreen(onBack: () -> Unit) {
+fun PersonCreateScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val repository = remember { LocalProviders.personaRepository(context) }
-    var nombre by remember { mutableStateOf("") }
-    var apellido by remember { mutableStateOf("") }
-    var fechaNacimientoStr by remember { mutableStateOf("") }
-    var pesoStr by remember { mutableStateOf("") }
-    var esZurdo by remember { mutableStateOf(false) }
+    val repository = remember { LocalProviders.personRepository(context) }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var birthDateStr by remember { mutableStateOf("") }
+    var weightStr by remember { mutableStateOf("") }
+    var isLeftHanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var resultMessage by remember { mutableStateOf<String?>(null) }
     var isError by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
     // Validación en tiempo real
-    val nombreError = when {
-        nombre.isBlank() -> "El nombre es requerido"
-        nombre.length > 50 -> "Máximo 50 caracteres"
+    val firstNameError = when {
+        firstName.isBlank() -> "El nombre es requerido"
+        firstName.length > 50 -> "Máximo 50 caracteres"
         else -> null
     }
     
-    val apellidoError = when {
-        apellido.isBlank() -> "El apellido es requerido" 
-        apellido.length > 50 -> "Máximo 50 caracteres"
+    val lastNameError = when {
+        lastName.isBlank() -> "El apellido es requerido" 
+        lastName.length > 50 -> "Máximo 50 caracteres"
         else -> null
     }
     
-    val pesoError = when {
-        pesoStr.isBlank() -> "El peso es requerido"
-        pesoStr.toDoubleOrNull() == null -> "Debe ser un número válido"
-        (pesoStr.toDoubleOrNull() ?: 0.0) <= 0 -> "Debe ser mayor a 0"
-        (pesoStr.toDoubleOrNull() ?: 0.0) > 1000 -> "Debe ser menor a 1000kg"
+    val weightError = when {
+        weightStr.isBlank() -> "El peso es requerido"
+        weightStr.toDoubleOrNull() == null -> "Debe ser un número válido"
+        (weightStr.toDoubleOrNull() ?: 0.0) <= 0 -> "Debe ser mayor a 0"
+        (weightStr.toDoubleOrNull() ?: 0.0) > 1000 -> "Debe ser menor a 1000kg"
         else -> null
     }
 
-    val isFormValid = nombreError == null && apellidoError == null && 
-                     pesoError == null && fechaNacimientoStr.isNotBlank()
+    val isFormValid = firstNameError == null && lastNameError == null && 
+                     weightError == null && birthDateStr.isNotBlank()
 
     AppScaffold(title = "Crear Persona") { padding ->
         Column(
@@ -170,28 +170,28 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
         ) {
             // Campo Nombre con validación
             OutlinedTextField(
-                value = nombre, 
-                onValueChange = { nombre = it },
+                value = firstName, 
+                onValueChange = { firstName = it },
                 label = { Text("Nombre") },
-                supportingText = nombreError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-                isError = nombreError != null,
+                supportingText = firstNameError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = firstNameError != null,
                 modifier = Modifier.fillMaxWidth()
             )
             
             // Campo Apellido con validación  
             OutlinedTextField(
-                value = apellido,
-                onValueChange = { apellido = it },
+                value = lastName,
+                onValueChange = { lastName = it },
                 label = { Text("Apellido") },
-                supportingText = apellidoError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-                isError = apellidoError != null,
+                supportingText = lastNameError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = lastNameError != null,
                 modifier = Modifier.fillMaxWidth()
             )
             
             // Campo Fecha (mejorado)
             OutlinedTextField(
-                value = fechaNacimientoStr,
-                onValueChange = { fechaNacimientoStr = it },
+                value = birthDateStr,
+                onValueChange = { birthDateStr = it },
                 label = { Text("Fecha Nacimiento") },
                 supportingText = { Text("Formato: aaaa-mm-dd (ej: 1990-05-15)") },
                 modifier = Modifier.fillMaxWidth()
@@ -199,11 +199,11 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
             
             // Campo Peso con validación
             OutlinedTextField(
-                value = pesoStr,
-                onValueChange = { pesoStr = it },
+                value = weightStr,
+                onValueChange = { weightStr = it },
                 label = { Text("Peso (kg)") },
-                supportingText = pesoError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-                isError = pesoError != null,
+                supportingText = weightError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                isError = weightError != null,
                 modifier = Modifier.fillMaxWidth()
             )
             
@@ -212,7 +212,7 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Checkbox(checked = esZurdo, onCheckedChange = { esZurdo = it })
+                Checkbox(checked = isLeftHanded, onCheckedChange = { isLeftHanded = it })
                 Text("Es zurdo")
             }
             
@@ -227,9 +227,9 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
                     }
                     
                     isLoading = true
-                    val fecha = try {
+                    val birthDate = try {
                         // Convertir fecha simple YYYY-MM-DD a timestamp
-                        val parts = fechaNacimientoStr.split("-")
+                        val parts = birthDateStr.split("-")
                         if (parts.size == 3) {
                             val year = parts[0].toInt()
                             val month = parts[1].toInt() - 1 // Calendar months are 0-based
@@ -238,25 +238,25 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
                                 set(year, month, day)
                             }.timeInMillis
                         } else {
-                            fechaNacimientoStr.toLongOrNull() ?: System.currentTimeMillis()
+                            birthDateStr.toLongOrNull() ?: System.currentTimeMillis()
                         }
                     } catch (e: Exception) {
                         System.currentTimeMillis() - (25 * 365 * 24 * 60 * 60 * 1000L) // Default: 25 años atrás
                     }
                     
-                    val peso = pesoStr.toDoubleOrNull() ?: 0.0
+                    val weight = weightStr.toDoubleOrNull() ?: 0.0
                     
                     scope.launch {
-                        when (val result = repository.create(nombre, apellido, fecha, peso, esZurdo)) {
+                        when (val result = repository.create(firstName, lastName, birthDate, weight, isLeftHanded)) {
                             is DatabaseResult.Success -> {
                                 resultMessage = "✅ Persona creada exitosamente con ID ${result.data}"
                                 isError = false
                                 // Limpiar formulario
-                                nombre = ""
-                                apellido = ""
-                                fechaNacimientoStr = ""
-                                pesoStr = ""
-                                esZurdo = false
+                                firstName = ""
+                                lastName = ""
+                                birthDateStr = ""
+                                weightStr = ""
+                                isLeftHanded = false
                             }
                             is DatabaseResult.Error -> {
                                 resultMessage = "❌ Error: ${result.exception.message}"
@@ -283,9 +283,9 @@ fun PersonaCreateScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun PersonaDeleteScreen(onBack: () -> Unit) {
+fun PersonDeleteScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val repository = remember { LocalProviders.personaRepository(context) }
+    val repository = remember { LocalProviders.personRepository(context) }
     var idStr by remember { mutableStateOf("") }
     var resultMessage by remember { mutableStateOf<String?>(null) }
     var isError by remember { mutableStateOf(false) }
@@ -352,11 +352,11 @@ fun PersonaDeleteScreen(onBack: () -> Unit) {
 }
 
 @Composable
-fun PersonaFindScreen(onBack: () -> Unit) {
+fun PersonFindScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val repository = remember { LocalProviders.personaRepository(context) }
+    val repository = remember { LocalProviders.personRepository(context) }
     var idStr by remember { mutableStateOf("") }
-    var persona by remember { mutableStateOf<Persona?>(null) }
+    var person by remember { mutableStateOf<Person?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -380,28 +380,28 @@ fun PersonaFindScreen(onBack: () -> Unit) {
                     val id = idStr.toLongOrNull()
                     if (id == null) {
                         errorMessage = "❌ ID inválido. Debe ser un número"
-                        persona = null
+                        person = null
                         return@PrimaryButton
                     }
                     
                     isLoading = true
                     errorMessage = null
-                    persona = null
+                    person = null
                     
                     scope.launch {
                         when (val result = repository.getById(id)) {
                             is DatabaseResult.Success -> {
                                 if (result.data != null) {
-                                    persona = result.data
+                                    person = result.data
                                     errorMessage = null
                                 } else {
                                     errorMessage = "❌ No se encontró persona con ID $id"
-                                    persona = null
+                                    person = null
                                 }
                             }
                             is DatabaseResult.Error -> {
                                 errorMessage = "❌ Error: ${result.exception.message}"
-                                persona = null
+                                person = null
                             }
                         }
                         isLoading = false
@@ -419,7 +419,7 @@ fun PersonaFindScreen(onBack: () -> Unit) {
             }
             
             // Mostrar persona encontrada
-            persona?.let { p ->
+            person?.let { p ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -432,10 +432,10 @@ fun PersonaFindScreen(onBack: () -> Unit) {
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text("ID: ${p.id}")
-                    Text("Nombre: ${p.nombre} ${p.apellido}")
-                    Text("Edad: ${p.edad} años")
-                    Text("Peso: ${p.peso}kg")
-                    Text("Zurdo: ${if (p.esZurdo) "Sí" else "No"}")
+                    Text("Nombre: ${p.firstName} ${p.lastName}")
+                    Text("Edad: ${p.age} años")
+                    Text("Peso: ${p.weightKg}kg")
+                    Text("Zurdo: ${if (p.isLeftHanded) "Sí" else "No"}")
                 }
             }
             

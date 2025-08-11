@@ -10,15 +10,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sortisplus.core.common.Route
 import com.sortisplus.core.designsystem.AppTheme
-import com.sortisplus.feature.home.ClienteMenuScreen
+import com.sortisplus.feature.home.CustomerMenuScreen
 import com.sortisplus.feature.home.DetailsScreen
 import com.sortisplus.feature.home.HomeScreen
 import com.sortisplus.feature.home.MenuScreen
-import com.sortisplus.feature.home.PersonaCreateScreen
-import com.sortisplus.feature.home.PersonaDeleteScreen
-import com.sortisplus.feature.home.PersonaFindScreen
-import com.sortisplus.feature.home.PersonaListScreen
-import com.sortisplus.feature.home.SaludoScreen
+import com.sortisplus.feature.home.PersonCreateScreen
+import com.sortisplus.feature.home.PersonDeleteScreen
+import com.sortisplus.feature.home.PersonFindScreen
+import com.sortisplus.feature.home.PersonListScreen
+import com.sortisplus.feature.home.GreetingScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,33 +50,33 @@ fun TemplateAndroidApp() {
             // New menu and flows
             composable(Route.Menu) {
                 MenuScreen(
-                    onSaludo = { navController.navigate(Route.Saludo) },
-                    onCliente = { navController.navigate(Route.ClienteMenu) }
+                    onGreeting = { navController.navigate(Route.Greeting) },
+                    onCustomer = { navController.navigate(Route.CustomerMenu) }
                 )
             }
-            composable(Route.Saludo) {
-                SaludoScreen(onBack = { navController.popBackStack() })
+            composable(Route.Greeting) {
+                GreetingScreen(onBack = { navController.popBackStack() })
             }
-            composable(Route.ClienteMenu) {
-                ClienteMenuScreen(
-                    onLista = { navController.navigate(Route.PersonaList) },
-                    onCrear = { navController.navigate(Route.PersonaCreate) },
-                    onEliminar = { navController.navigate(Route.PersonaDelete) },
-                    onBuscar = { navController.navigate(Route.PersonaFind) },
+            composable(Route.CustomerMenu) {
+                CustomerMenuScreen(
+                    onList = { navController.navigate(Route.PersonList) },
+                    onCreate = { navController.navigate(Route.PersonCreate) },
+                    onDelete = { navController.navigate(Route.PersonDelete) },
+                    onFind = { navController.navigate(Route.PersonFind) },
                     onBack = { navController.popBackStack() }
                 )
             }
-            composable(Route.PersonaList) {
-                PersonaListScreen(onBack = { navController.popBackStack() })
+            composable(Route.PersonList) {
+                PersonListScreen(onBack = { navController.popBackStack() })
             }
-            composable(Route.PersonaCreate) {
-                PersonaCreateScreen(onBack = { navController.popBackStack() })
+            composable(Route.PersonCreate) {
+                PersonCreateScreen(onBack = { navController.popBackStack() })
             }
-            composable(Route.PersonaDelete) {
-                PersonaDeleteScreen(onBack = { navController.popBackStack() })
+            composable(Route.PersonDelete) {
+                PersonDeleteScreen(onBack = { navController.popBackStack() })
             }
-            composable(Route.PersonaFind) {
-                PersonaFindScreen(onBack = { navController.popBackStack() })
+            composable(Route.PersonFind) {
+                PersonFindScreen(onBack = { navController.popBackStack() })
             }
         }
     }

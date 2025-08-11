@@ -4,12 +4,12 @@ import android.content.Context
 import com.sortisplus.core.data.DatabaseResult
 import com.sortisplus.core.data.Element
 import com.sortisplus.core.data.ElementRepository
-import com.sortisplus.core.data.Persona
-import com.sortisplus.core.data.PersonaRepository
+import com.sortisplus.core.data.Person
+import com.sortisplus.core.data.PersonRepository
 import com.sortisplus.core.data.SettingsRepository
 import com.sortisplus.core.database.DatabaseProvider
 import com.sortisplus.core.database.model.ElementEntity
-import com.sortisplus.core.database.model.PersonaEntity
+import com.sortisplus.core.database.model.PersonEntity
 import com.sortisplus.core.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -43,43 +43,43 @@ private fun ElementEntity.toDomain() = Element(
     updatedAt = updatedAt
 )
 
-class LocalPersonaRepository(context: Context) : PersonaRepository {
+class LocalPersonRepository(context: Context) : PersonRepository {
     private val db = DatabaseProvider.get(context)
-    private val dao = db.personaDao()
+    private val dao = db.personDao()
 
-    override fun observeAll(): Flow<List<Persona>> =
+    override fun observeAll(): Flow<List<Person>> =
         dao.observeAll().map { list -> list.map { it.toDomain() } }
 
-    override suspend fun getById(id: Long): DatabaseResult<Persona?> = try {
-        val persona = dao.getById(id)?.toDomain()
-        DatabaseResult.Success(persona)
+    override suspend fun getById(id: Long): DatabaseResult<Person?> = try {
+        val person = dao.getById(id)?.toDomain()
+        DatabaseResult.Success(person)
     } catch (e: Exception) {
         DatabaseResult.Error(e)
     }
 
     override suspend fun create(
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Long> {
         return try {
             // Validate input
-            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            val validation = Person.validate(firstName, lastName, birthDateMillis, weightKg)
             if (!validation.isValid) {
                 return DatabaseResult.Error(
                     IllegalArgumentException(validation.errors.joinToString(", "))
                 )
             }
-            
+
             val id = dao.insert(
-                PersonaEntity(
-                    nombre = nombre.trim(),
-                    apellido = apellido.trim(),
-                    fechaNacimiento = fechaNacimiento,
-                    peso = peso,
-                    esZurdo = esZurdo
+                PersonEntity(
+                    firstName = firstName.trim(),
+                    lastName = lastName.trim(),
+                    birthDateMillis = birthDateMillis,
+                    weightKg = weightKg,
+                    isLeftHanded = isLeftHanded
                 )
             )
             DatabaseResult.Success(id)
@@ -90,30 +90,30 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
 
     override suspend fun update(
         id: Long,
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Boolean> {
         return try {
             // Validate input
-            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            val validation = Person.validate(firstName, lastName, birthDateMillis, weightKg)
             if (!validation.isValid) {
                 return DatabaseResult.Error(
                     IllegalArgumentException(validation.errors.joinToString(", "))
                 )
             }
-            
-            val current = dao.getById(id) 
+
+            val current = dao.getById(id)
                 ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
-                
+
             val changed = current.copy(
-                nombre = nombre.trim(),
-                apellido = apellido.trim(),
-                fechaNacimiento = fechaNacimiento,
-                peso = peso,
-                esZurdo = esZurdo
+                firstName = firstName.trim(),
+                lastName = lastName.trim(),
+                birthDateMillis = birthDateMillis,
+                weightKg = weightKg,
+                isLeftHanded = isLeftHanded
             )
             val success = dao.update(changed) > 0
             DatabaseResult.Success(success)
@@ -134,13 +134,13 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
     }
 }
 
-private fun PersonaEntity.toDomain() = Persona(
+private fun PersonEntity.toDomain() = Person(
     id = id,
-    nombre = nombre,
-    apellido = apellido,
-    fechaNacimiento = fechaNacimiento,
-    peso = peso,
-    esZurdo = esZurdo
+    firstName = firstName,
+    lastName = lastName,
+    birthDateMillis = birthDateMillis,
+    weightKg = weightKg,
+    isLeftHanded = isLeftHanded
 )
 
 class LocalSettingsRepository(context: Context) : SettingsRepository {
@@ -155,8 +155,8 @@ object LocalProviders {
     fun elementRepository(context: Context): ElementRepository =
         LocalElementRepository(context)
 
-    fun personaRepository(context: Context): PersonaRepository =
-        LocalPersonaRepository(context)
+    fun personRepository(context: Context): PersonRepository =
+        LocalPersonRepository(context)
 
     fun settingsRepository(context: Context): SettingsRepository =
         LocalSettingsRepository(context)
