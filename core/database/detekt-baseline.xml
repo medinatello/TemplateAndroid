@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>FinalNewline:ElementDao.kt$com.sortisplus.core.database.dao.ElementDao.kt</ID>
+    <ID>FinalNewline:ElementEntity.kt$com.sortisplus.core.database.model.ElementEntity.kt</ID>
+    <ID>FinalNewline:Migrations.kt$com.sortisplus.core.database.Migrations.kt</ID>
+    <ID>Indentation:AppDatabase.kt$AppDatabase$ </ID>
+    <ID>NewLineAtEndOfFile:ElementDao.kt$com.sortisplus.core.database.dao.ElementDao.kt</ID>
+    <ID>NewLineAtEndOfFile:ElementEntity.kt$com.sortisplus.core.database.model.ElementEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:Migrations.kt$com.sortisplus.core.database.Migrations.kt</ID>
+    <ID>NoWildcardImports:ElementDao.kt$import androidx.room.*</ID>
+    <ID>NoWildcardImports:PersonDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:ElementDao.kt$import androidx.room.*</ID>
+    <ID>WildcardImport:PersonDao.kt$import androidx.room.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

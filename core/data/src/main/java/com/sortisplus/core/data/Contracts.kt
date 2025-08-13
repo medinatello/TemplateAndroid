@@ -20,52 +20,52 @@ data class ValidationResult(
 }
 
 // Domain model
- data class Element(
+data class Element(
     val id: Long,
     val title: String,
     val createdAt: Long,
     val updatedAt: Long? = null
 )
 
-// Persona domain model (Cliente)
- data class Persona(
+// Person domain model (Customer)
+data class Person(
     val id: Long,
-    val nombre: String,
-    val apellido: String,
-    val fechaNacimiento: Long,
-    val peso: Double,
-    val esZurdo: Boolean
+    val firstName: String,
+    val lastName: String,
+    val birthDateMillis: Long,
+    val weightKg: Double,
+    val isLeftHanded: Boolean
 ) {
     // Calculated property for age
-    val edad: Int
+    val age: Int
         get() {
             val currentTime = System.currentTimeMillis()
-            val ageInMillis = currentTime - fechaNacimiento
+            val ageInMillis = currentTime - birthDateMillis
             val ageInYears = ageInMillis / (365.25 * 24 * 60 * 60 * 1000)
             return ageInYears.toInt()
         }
-    
+
     companion object {
         fun validate(
-            nombre: String,
-            apellido: String, 
-            fechaNacimiento: Long,
-            peso: Double
+            firstName: String,
+            lastName: String,
+            birthDateMillis: Long,
+            weightKg: Double
         ): ValidationResult {
             val errors = mutableListOf<String>()
-            
-            if (nombre.isBlank()) errors.add("El nombre no puede estar vacío")
-            if (nombre.length > 50) errors.add("El nombre no puede tener más de 50 caracteres")
-            
-            if (apellido.isBlank()) errors.add("El apellido no puede estar vacío")  
-            if (apellido.length > 50) errors.add("El apellido no puede tener más de 50 caracteres")
-            
-            if (fechaNacimiento <= 0) errors.add("La fecha de nacimiento debe ser válida")
-            if (fechaNacimiento > System.currentTimeMillis()) errors.add("La fecha de nacimiento no puede ser futura")
-            
-            if (peso <= 0) errors.add("El peso debe ser mayor a 0")
-            if (peso > 1000) errors.add("El peso debe ser menor a 1000kg")
-            
+
+            if (firstName.isBlank()) errors.add("First name cannot be empty")
+            if (firstName.length > 50) errors.add("First name cannot have more than 50 characters")
+
+            if (lastName.isBlank()) errors.add("Last name cannot be empty")
+            if (lastName.length > 50) errors.add("Last name cannot have more than 50 characters")
+
+            if (birthDateMillis <= 0) errors.add("Birth date must be valid")
+            if (birthDateMillis > System.currentTimeMillis()) errors.add("Birth date cannot be in the future")
+
+            if (weightKg <= 0) errors.add("Weight must be greater than 0")
+            if (weightKg > 1000) errors.add("Weight must be less than 1000kg")
+
             return if (errors.isEmpty()) {
                 ValidationResult.success()
             } else {
@@ -82,23 +82,23 @@ interface ElementRepository {
     suspend fun delete(id: Long): Boolean
 }
 
-interface PersonaRepository {
-    fun observeAll(): Flow<List<Persona>>
-    suspend fun getById(id: Long): DatabaseResult<Persona?>
+interface PersonRepository {
+    fun observeAll(): Flow<List<Person>>
+    suspend fun getById(id: Long): DatabaseResult<Person?>
     suspend fun create(
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Long>
     suspend fun update(
         id: Long,
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Boolean>
     suspend fun delete(id: Long): DatabaseResult<Boolean>
 }

@@ -4,16 +4,24 @@ import android.content.Context
 import com.sortisplus.core.data.DatabaseResult
 import com.sortisplus.core.data.Element
 import com.sortisplus.core.data.ElementRepository
-import com.sortisplus.core.data.Persona
-import com.sortisplus.core.data.PersonaRepository
+import com.sortisplus.core.data.Person
+import com.sortisplus.core.data.PersonRepository
 import com.sortisplus.core.data.SettingsRepository
 import com.sortisplus.core.database.DatabaseProvider
 import com.sortisplus.core.database.model.ElementEntity
-import com.sortisplus.core.database.model.PersonaEntity
+import com.sortisplus.core.database.model.PersonEntity
 import com.sortisplus.core.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Local implementation of ElementRepository using Room database
+ * 
+ * Provides CRUD operations for Element entities stored in local SQLite database.
+ * All operations are performed asynchronously using Kotlin coroutines.
+ * 
+ * @param context Android context required for database access
+ */
 class LocalElementRepository(context: Context) : ElementRepository {
     private val db = DatabaseProvider.get(context)
     private val dao = db.elementDao()
@@ -43,43 +51,51 @@ private fun ElementEntity.toDomain() = Element(
     updatedAt = updatedAt
 )
 
-class LocalPersonaRepository(context: Context) : PersonaRepository {
+/**
+ * Local implementation of PersonRepository using Room database
+ * 
+ * Handles person data persistence with validation and error handling.
+ * Implements the Repository pattern with Result wrapper for safe error management.
+ * 
+ * @param context Android context required for database access
+ */
+class LocalPersonRepository(context: Context) : PersonRepository {
     private val db = DatabaseProvider.get(context)
-    private val dao = db.personaDao()
+    private val dao = db.personDao()
 
-    override fun observeAll(): Flow<List<Persona>> =
+    override fun observeAll(): Flow<List<Person>> =
         dao.observeAll().map { list -> list.map { it.toDomain() } }
 
-    override suspend fun getById(id: Long): DatabaseResult<Persona?> = try {
-        val persona = dao.getById(id)?.toDomain()
-        DatabaseResult.Success(persona)
+    override suspend fun getById(id: Long): DatabaseResult<Person?> = try {
+        val person = dao.getById(id)?.toDomain()
+        DatabaseResult.Success(person)
     } catch (e: Exception) {
         DatabaseResult.Error(e)
     }
 
     override suspend fun create(
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Long> {
         return try {
             // Validate input
-            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            val validation = Person.validate(firstName, lastName, birthDateMillis, weightKg)
             if (!validation.isValid) {
                 return DatabaseResult.Error(
                     IllegalArgumentException(validation.errors.joinToString(", "))
                 )
             }
-            
+
             val id = dao.insert(
-                PersonaEntity(
-                    nombre = nombre.trim(),
-                    apellido = apellido.trim(),
-                    fechaNacimiento = fechaNacimiento,
-                    peso = peso,
-                    esZurdo = esZurdo
+                PersonEntity(
+                    firstName = firstName.trim(),
+                    lastName = lastName.trim(),
+                    birthDateMillis = birthDateMillis,
+                    weightKg = weightKg,
+                    isLeftHanded = isLeftHanded
                 )
             )
             DatabaseResult.Success(id)
@@ -90,30 +106,30 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
 
     override suspend fun update(
         id: Long,
-        nombre: String,
-        apellido: String,
-        fechaNacimiento: Long,
-        peso: Double,
-        esZurdo: Boolean
+        firstName: String,
+        lastName: String,
+        birthDateMillis: Long,
+        weightKg: Double,
+        isLeftHanded: Boolean
     ): DatabaseResult<Boolean> {
         return try {
             // Validate input
-            val validation = Persona.validate(nombre, apellido, fechaNacimiento, peso)
+            val validation = Person.validate(firstName, lastName, birthDateMillis, weightKg)
             if (!validation.isValid) {
                 return DatabaseResult.Error(
                     IllegalArgumentException(validation.errors.joinToString(", "))
                 )
             }
-            
-            val current = dao.getById(id) 
-                ?: return DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
-                
+
+            val current = dao.getById(id)
+                ?: return DatabaseResult.Error(IllegalArgumentException("Person with ID $id not found"))
+
             val changed = current.copy(
-                nombre = nombre.trim(),
-                apellido = apellido.trim(),
-                fechaNacimiento = fechaNacimiento,
-                peso = peso,
-                esZurdo = esZurdo
+                firstName = firstName.trim(),
+                lastName = lastName.trim(),
+                birthDateMillis = birthDateMillis,
+                weightKg = weightKg,
+                isLeftHanded = isLeftHanded
             )
             val success = dao.update(changed) > 0
             DatabaseResult.Success(success)
@@ -125,7 +141,7 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
     override suspend fun delete(id: Long): DatabaseResult<Boolean> = try {
         val success = dao.deleteById(id) > 0
         if (!success) {
-            DatabaseResult.Error(IllegalArgumentException("Persona con ID $id no encontrada"))
+            DatabaseResult.Error(IllegalArgumentException("Person with ID $id not found"))
         } else {
             DatabaseResult.Success(true)
         }
@@ -134,15 +150,23 @@ class LocalPersonaRepository(context: Context) : PersonaRepository {
     }
 }
 
-private fun PersonaEntity.toDomain() = Persona(
+private fun PersonEntity.toDomain() = Person(
     id = id,
-    nombre = nombre,
-    apellido = apellido,
-    fechaNacimiento = fechaNacimiento,
-    peso = peso,
-    esZurdo = esZurdo
+    firstName = firstName,
+    lastName = lastName,
+    birthDateMillis = birthDateMillis,
+    weightKg = weightKg,
+    isLeftHanded = isLeftHanded
 )
 
+/**
+ * Local implementation of SettingsRepository using DataStore
+ * 
+ * Manages application settings with reactive data streams.
+ * Provides type-safe access to user preferences.
+ * 
+ * @param context Android context required for DataStore access
+ */
 class LocalSettingsRepository(context: Context) : SettingsRepository {
     private val ds = SettingsDataStore(context)
     override val darkTheme = ds.darkTheme
@@ -151,12 +175,18 @@ class LocalSettingsRepository(context: Context) : SettingsRepository {
     override suspend fun setListOrder(value: String) = ds.setListOrder(value)
 }
 
+/**
+ * Provider object for creating local repository instances
+ * 
+ * Implements the factory pattern to provide repository instances
+ * with proper dependency injection. Acts as a simple service locator.
+ */
 object LocalProviders {
     fun elementRepository(context: Context): ElementRepository =
         LocalElementRepository(context)
 
-    fun personaRepository(context: Context): PersonaRepository =
-        LocalPersonaRepository(context)
+    fun personRepository(context: Context): PersonRepository =
+        LocalPersonRepository(context)
 
     fun settingsRepository(context: Context): SettingsRepository =
         LocalSettingsRepository(context)

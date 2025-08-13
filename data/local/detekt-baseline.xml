@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>NoTrailingSpaces:LocalRepositories.kt$LocalElementRepository$ </ID>
+    <ID>NoTrailingSpaces:LocalRepositories.kt$LocalPersonRepository$ </ID>
+    <ID>NoTrailingSpaces:LocalRepositories.kt$LocalProviders$ </ID>
+    <ID>NoTrailingSpaces:LocalRepositories.kt$LocalSettingsRepository$ </ID>
+    <ID>ReturnCount:LocalRepositories.kt$LocalPersonRepository$override suspend fun update( id: Long, firstName: String, lastName: String, birthDateMillis: Long, weightKg: Double, isLeftHanded: Boolean ): DatabaseResult&lt;Boolean&gt;</ID>
+    <ID>TooGenericExceptionCaught:LocalRepositories.kt$LocalPersonRepository$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

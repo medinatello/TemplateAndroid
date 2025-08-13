@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:Screens.kt$("#${p.id} - ${p.lastName}, ${p.firstName} | ${p.age} " + stringResource(CommonR.string.years_unit) + " | " + stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" + stringResource(CommonR.string.kg_unit) + " | " + stringResource(CommonR.string.label_left_handed) + ": " + if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no) )</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.action_toggle_theme)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_back)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_delete)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_deleting)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_save)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_saving)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_search)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(CommonR.string.button_searching)</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(stringResource(CommonR.string.label_age) + ": ${p.age} " + stringResource(CommonR.string.years_unit))</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(stringResource(CommonR.string.label_left_handed) + ": " + (if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no)))</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" + stringResource(CommonR.string.kg_unit))</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(text = stringResource(CommonR.string.button_back), onClick = onBack, modifier = Modifier.padding(top = 16.dp))</ID>
+    <ID>ArgumentListWrapping:Screens.kt$(top = 16.dp)</ID>
+    <ID>CyclomaticComplexMethod:Screens.kt$@Composable fun PersonCreateScreen( onBack: () -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit )</ID>
+    <ID>ImportOrdering:Screens.kt$import androidx.compose.foundation.layout.Arrangement import androidx.compose.foundation.layout.Column import androidx.compose.foundation.layout.Row import androidx.compose.foundation.layout.Spacer import androidx.compose.foundation.layout.fillMaxWidth import androidx.compose.foundation.layout.height import androidx.compose.foundation.layout.padding import androidx.compose.foundation.layout.size import androidx.compose.foundation.lazy.LazyColumn import androidx.compose.foundation.lazy.items import androidx.compose.material3.Card import androidx.compose.material3.CardDefaults import androidx.compose.material3.Checkbox import androidx.compose.material3.Icon import androidx.compose.material3.IconButton import androidx.compose.foundation.shape.RoundedCornerShape import androidx.compose.material.icons.Icons import androidx.compose.material.icons.filled.DarkMode import androidx.compose.material.icons.filled.LightMode import androidx.compose.material.icons.filled.Face import androidx.compose.material.icons.filled.Home import androidx.compose.material.icons.filled.Person import androidx.compose.material.icons.filled.PersonAdd import androidx.compose.material.icons.filled.PersonRemove import androidx.compose.material.icons.filled.Search import androidx.compose.material.icons.filled.List import androidx.compose.material.icons.filled.Info import androidx.compose.material3.MaterialTheme import androidx.compose.material3.OutlinedTextField import androidx.compose.material3.Text import androidx.compose.runtime.Composable import androidx.compose.runtime.LaunchedEffect import androidx.compose.runtime.getValue import androidx.compose.runtime.mutableStateOf import androidx.compose.runtime.remember import androidx.compose.runtime.setValue import androidx.compose.runtime.rememberCoroutineScope import androidx.compose.ui.Alignment import androidx.compose.ui.Modifier import androidx.compose.ui.text.style.TextAlign import androidx.compose.ui.unit.dp import androidx.compose.ui.res.stringResource import androidx.compose.ui.tooling.preview.Preview import com.sortisplus.core.data.DatabaseResult import com.sortisplus.core.data.Person import com.sortisplus.data.local.LocalProviders import com.sortisplus.core.ui.AppScaffold import com.sortisplus.core.ui.PrimaryButton import com.sortisplus.core.ui.MenuItemCard import com.sortisplus.core.ui.SectionHeader import com.sortisplus.core.ui.ScreenContainer import com.sortisplus.core.ui.SearchBar import kotlinx.coroutines.launch import androidx.compose.ui.platform.LocalContext import com.sortisplus.core.designsystem.AppTheme import com.sortisplus.core.common.R as CommonR</ID>
+    <ID>Indentation:Screens.kt$ </ID>
+    <ID>LongMethod:Screens.kt$@Composable fun MenuScreen(onGreeting: () -&gt; Unit, onCustomer: () -&gt; Unit)</ID>
+    <ID>LongMethod:Screens.kt$@Composable fun PersonCreateScreen( onBack: () -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit )</ID>
+    <ID>LongMethod:Screens.kt$@Composable fun PersonDeleteScreen( onBack: () -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit )</ID>
+    <ID>LongMethod:Screens.kt$@Composable fun PersonFindScreen( onBack: () -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit )</ID>
+    <ID>MagicNumber:Screens.kt$1000</ID>
+    <ID>MagicNumber:Screens.kt$50</ID>
+    <ID>MaxLineLength:Screens.kt$Icon(Icons.Filled.LightMode, contentDescription = stringResource(CommonR.string.action_toggle_theme))</ID>
+    <ID>MaxLineLength:Screens.kt$PrimaryButton(text = stringResource(CommonR.string.button_back), onClick = onBack, modifier = Modifier.padding(top = 16.dp))</ID>
+    <ID>MaxLineLength:Screens.kt$Text(stringResource(CommonR.string.label_age) + ": ${p.age} " + stringResource(CommonR.string.years_unit))</ID>
+    <ID>MaxLineLength:Screens.kt$Text(stringResource(CommonR.string.label_left_handed) + ": " + (if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no)))</ID>
+    <ID>MaxLineLength:Screens.kt$Text(stringResource(CommonR.string.label_weight) + ": ${p.weightKg}" + stringResource(CommonR.string.kg_unit))</ID>
+    <ID>MaxLineLength:Screens.kt$errorMessage = context.getString(CommonR.string.msg_error_with_reason, result.exception.message ?: "")</ID>
+    <ID>MaxLineLength:Screens.kt$firstName.isBlank() -&gt; stringResource(CommonR.string.label_first_name) + " " + stringResource(CommonR.string.error_field_required)</ID>
+    <ID>MaxLineLength:Screens.kt$if (p.isLeftHanded) stringResource(CommonR.string.label_yes) else stringResource(CommonR.string.label_no)</ID>
+    <ID>MaxLineLength:Screens.kt$lastName.isBlank() -&gt; stringResource(CommonR.string.label_last_name) + " " + stringResource(CommonR.string.error_field_required)</ID>
+    <ID>MaxLineLength:Screens.kt$resultMessage = context.getString(CommonR.string.msg_error_with_reason, result.exception.message ?: "")</ID>
+    <ID>MaxLineLength:Screens.kt$text = if (isLoading) stringResource(CommonR.string.button_deleting) else stringResource(CommonR.string.button_delete)</ID>
+    <ID>MaxLineLength:Screens.kt$text = if (isLoading) stringResource(CommonR.string.button_saving) else stringResource(CommonR.string.button_save)</ID>
+    <ID>MaxLineLength:Screens.kt$text = if (isLoading) stringResource(CommonR.string.button_searching) else stringResource(CommonR.string.button_search)</ID>
+    <ID>MaxLineLength:Screens.kt$weightStr.isBlank() -&gt; stringResource(CommonR.string.label_weight) + " " + stringResource(CommonR.string.error_field_required)</ID>
+    <ID>MaximumLineLength:Screens.kt$ </ID>
+    <ID>MultiLineIfElse:Screens.kt$p.firstName.lowercase().contains(q) || p.lastName.lowercase().contains(q)</ID>
+    <ID>MultiLineIfElse:Screens.kt$true</ID>
+    <ID>NoMultipleSpaces:Screens.kt$ </ID>
+    <ID>NoTrailingSpaces:Screens.kt$ </ID>
+    <ID>NoTrailingSpaces:Screens.kt$// Campo Apellido con validación </ID>
+    <ID>NoUnusedImports:Screens.kt$com.sortisplus.feature.home.Screens.kt</ID>
+    <ID>SwallowedException:Screens.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:Screens.kt$e: Exception</ID>
+    <ID>TooManyFunctions:Screens.kt$com.sortisplus.feature.home.Screens.kt</ID>
+    <ID>Wrapping:Screens.kt$(</ID>
+  </CurrentIssues>
+</SmellBaseline>

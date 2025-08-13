@@ -5,4 +5,100 @@
     <string name="details_screen_title">Details</string>
     <string name="details_screen_message">Segunda pantalla</string>
     <string name="button_back">Volver</string>
+    
+    <!-- General -->
+    <string name="menu_title">Menú</string>
+    <string name="menu_greeting">Saludo</string>
+    <string name="menu_customer">Cliente</string>
+
+    <!-- Home -->
+    <string name="home_title">Home</string>
+    <string name="home_description">Pantalla inicial de ejemplo</string>
+    <string name="home_go_menu">Ir al Menú</string>
+
+    <!-- Greeting -->
+    <string name="greeting_title">Saludo</string>
+    <string name="greeting_message">¡Hola! Esta es la pantalla de saludo.</string>
+
+    <!-- Customer Menu -->
+    <string name="customer_title">Cliente</string>
+    <string name="customer_list_people">Lista de Personas</string>
+    <string name="customer_create_person">Crear / Guardar Persona</string>
+    <string name="customer_delete_person">Eliminar Persona</string>
+    <string name="customer_find_person">Buscar Persona por ID</string>
+
+    <!-- Person List -->
+    <string name="person_list_title">Personas</string>
+    <string name="years_unit">años</string>
+    <string name="kg_unit">kg</string>
+    <string name="label_weight">Peso</string>
+    <string name="label_left_handed">Zurdo</string>
+    <string name="label_yes">Sí</string>
+    <string name="label_no">No</string>
+
+    <!-- Person Create -->
+    <string name="person_create_title">Crear Persona</string>
+    <string name="label_first_name">Nombre</string>
+    <string name="label_last_name">Apellido</string>
+    <string name="label_birth_date">Fecha Nacimiento</string>
+    <string name="label_birth_date_hint">Formato: aaaa-mm-dd (ej: 1990-05-15)</string>
+    <string name="label_weight_kg">Peso (kg)</string>
+    <string name="label_is_left_handed">Es zurdo</string>
+    <string name="button_save">Guardar</string>
+    <string name="button_saving">Guardando...</string>
+    <string name="msg_fix_errors">Por favor corrige los errores</string>
+    <string name="msg_person_created">✅ Persona creada exitosamente con ID %1$d</string>
+    <string name="msg_error_with_reason">❌ Error: %1$s</string>
+
+    <!-- Person Delete -->
+    <string name="person_delete_title">Eliminar Persona</string>
+    <string name="label_person_id">ID de la Persona</string>
+    <string name="hint_enter_person_id">Ingresa el ID numérico de la persona a eliminar</string>
+    <string name="button_delete">Eliminar</string>
+    <string name="button_deleting">Eliminando...</string>
+    <string name="msg_invalid_id">❌ ID inválido. Debe ser un número</string>
+    <string name="msg_person_deleted">✅ Persona eliminada exitosamente</string>
+    <string name="msg_person_not_found">❌ No se encontró persona con ID %1$d</string>
+
+    <!-- Person Find -->
+    <string name="person_find_title">Buscar Persona</string>
+    <string name="hint_enter_person_id_find">Ingresa el ID numérico de la persona a buscar</string>
+    <string name="button_search">Buscar</string>
+    <string name="button_searching">Buscando...</string>
+    <string name="msg_person_found">✅ Persona encontrada:</string>
+    <string name="label_id">ID</string>
+    <string name="label_name">Nombre</string>
+    <string name="label_age">Edad</string>
+    
+    <!-- Actions / Theme -->
+    <string name="action_toggle_theme">Cambiar tema</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_light">Claro</string>
+    
+    <!-- Search -->
+    <string name="label_search">Buscar</string>
+    <string name="search_hint">Buscar personas...</string>
+    <string name="search_no_results">No se encontraron resultados</string>
+    
+    <!-- Navigation -->
+    <string name="nav_menu">Menú</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_people">Personas</string>
+    <string name="nav_settings">Configuración</string>
+    
+    <!-- Menu sections -->
+    <string name="menu_section_main">Principal</string>
+    <string name="menu_section_data">Gestión de Datos</string>
+    <string name="menu_section_settings">Configuración</string>
+    
+    <!-- Modern UI -->
+    <string name="app_description">Plantilla Android con arquitectura moderna</string>
+    <string name="version_info">Versión 1.0 - MVP 2.5</string>
+    
+    <!-- Error messages -->
+    <string name="error_field_required">es requerido</string>
+    <string name="error_max_50_chars">Máximo 50 caracteres</string>
+    <string name="error_invalid_number">Debe ser un número válido</string>
+    <string name="error_greater_than_zero">Debe ser mayor a 0</string>
+    <string name="error_less_than_1000kg">Debe ser menor a 1000kg</string>
 </resources>

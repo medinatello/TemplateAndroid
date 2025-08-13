@@ -11,9 +11,10 @@ object DatabaseProvider {
             INSTANCE ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
-                "app.db"
+                "app_dev_v2.db"
             )
                 .fallbackToDestructiveMigrationOnDowngrade()
+                .fallbackToDestructiveMigration()
                 .build()
                 .also { INSTANCE = it }
         }

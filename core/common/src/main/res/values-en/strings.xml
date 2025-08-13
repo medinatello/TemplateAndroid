@@ -1,0 +1,104 @@
+<resources>
+    <string name="home_screen_title">Android base</string>
+    <string name="home_screen_welcome_message">Welcome to the project base</string>
+    <string name="button_continue">Continue</string>
+    <string name="details_screen_title">Details</string>
+    <string name="details_screen_message">Second screen</string>
+    <string name="button_back">Back</string>
+
+    <!-- General -->
+    <string name="menu_title">Menu</string>
+    <string name="menu_greeting">Greeting</string>
+    <string name="menu_customer">Customer</string>
+
+    <!-- Home -->
+    <string name="home_title">Home</string>
+    <string name="home_description">Sample home screen</string>
+    <string name="home_go_menu">Go to Menu</string>
+
+    <!-- Greeting -->
+    <string name="greeting_title">Greeting</string>
+    <string name="greeting_message">Hello! This is the greeting screen.</string>
+
+    <!-- Customer Menu -->
+    <string name="customer_title">Customer</string>
+    <string name="customer_list_people">People list</string>
+    <string name="customer_create_person">Create / Save person</string>
+    <string name="customer_delete_person">Delete person</string>
+    <string name="customer_find_person">Find person by ID</string>
+
+    <!-- Person List -->
+    <string name="person_list_title">People</string>
+    <string name="years_unit">years</string>
+    <string name="kg_unit">kg</string>
+    <string name="label_weight">Weight</string>
+    <string name="label_left_handed">Left-handed</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_no">No</string>
+
+    <!-- Person Create -->
+    <string name="person_create_title">Create Person</string>
+    <string name="label_first_name">First name</string>
+    <string name="label_last_name">Last name</string>
+    <string name="label_birth_date">Birth date</string>
+    <string name="label_birth_date_hint">Format: yyyy-mm-dd (e.g., 1990-05-15)</string>
+    <string name="label_weight_kg">Weight (kg)</string>
+    <string name="label_is_left_handed">Is left-handed</string>
+    <string name="button_save">Save</string>
+    <string name="button_saving">Saving...</string>
+    <string name="msg_fix_errors">Please fix the errors</string>
+    <string name="msg_person_created">✅ Person created successfully with ID %1$d</string>
+    <string name="msg_error_with_reason">❌ Error: %1$s</string>
+
+    <!-- Person Delete -->
+    <string name="person_delete_title">Delete Person</string>
+    <string name="label_person_id">Person ID</string>
+    <string name="hint_enter_person_id">Enter the numeric ID of the person to delete</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_deleting">Deleting...</string>
+    <string name="msg_invalid_id">❌ Invalid ID. Must be a number</string>
+    <string name="msg_person_deleted">✅ Person deleted successfully</string>
+    <string name="msg_person_not_found">❌ Person not found with ID %1$d</string>
+
+    <!-- Person Find -->
+    <string name="person_find_title">Find Person</string>
+    <string name="hint_enter_person_id_find">Enter the numeric ID of the person to search</string>
+    <string name="button_search">Search</string>
+    <string name="button_searching">Searching...</string>
+    <string name="msg_person_found">✅ Person found:</string>
+    <string name="label_id">ID</string>
+    <string name="label_name">Name</string>
+    <string name="label_age">Age</string>
+    
+    <!-- Actions / Theme -->
+    <string name="action_toggle_theme">Toggle theme</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    
+    <!-- Search -->
+    <string name="label_search">Search</string>
+    <string name="search_hint">Search people...</string>
+    <string name="search_no_results">No results found</string>
+    
+    <!-- Navigation -->
+    <string name="nav_menu">Menu</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_people">People</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Menu sections -->
+    <string name="menu_section_main">Main</string>
+    <string name="menu_section_data">Data Management</string>
+    <string name="menu_section_settings">Settings</string>
+    
+    <!-- Modern UI -->
+    <string name="app_description">Android template with modern architecture</string>
+    <string name="version_info">Version 1.0 - MVP 2.5</string>
+    
+    <!-- Error messages -->
+    <string name="error_field_required">is required</string>
+    <string name="error_max_50_chars">Maximum 50 characters</string>
+    <string name="error_invalid_number">Must be a valid number</string>
+    <string name="error_greater_than_zero">Must be greater than 0</string>
+    <string name="error_less_than_1000kg">Must be less than 1000kg</string>
+</resources>

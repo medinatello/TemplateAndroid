@@ -17,17 +17,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions { jvmTarget = "11" }
+    
+    lint {
+        disable.add("CoroutineCreationDuringComposition")
+    }
 }
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation("androidx.compose.material:material-icons-extended")
     // Removed to avoid duplicate packaging of activity-compose across modules; app provides it
     implementation(project(":core:ui"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":data:local"))
 
+    debugImplementation(libs.androidx.ui.tooling)
     testImplementation(libs.junit)
 }

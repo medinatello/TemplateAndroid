@@ -3,16 +3,16 @@ package com.sortisplus.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.sortisplus.core.database.dao.ElementDao
-import com.sortisplus.core.database.dao.PersonaDao
+import com.sortisplus.core.database.dao.PersonDao
 import com.sortisplus.core.database.model.ElementEntity
-import com.sortisplus.core.database.model.PersonaEntity
+import com.sortisplus.core.database.model.PersonEntity
 
 @Database(
-  entities = [ElementEntity::class, PersonaEntity::class],
-  version = 1,
+  entities = [ElementEntity::class, PersonEntity::class],
+  version = 2,
   exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
   abstract fun elementDao(): ElementDao
-  abstract fun personaDao(): PersonaDao
+  abstract fun personDao(): PersonDao
 }

@@ -44,6 +44,10 @@ android {
     buildFeatures {
         compose = true
     }
+    
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeBom.get()
+    }
 }
 
 // Automatically sanitize invalid Android resource names (e.g., files with spaces) before building
@@ -135,11 +139,18 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    
+    // Enhanced Compose libraries
+    implementation(libs.androidx.compose.animation)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.material.icons)
     implementation(libs.androidx.navigation.compose)
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
     implementation(project(":feature:home"))
     implementation(project(":data:local"))
 
