@@ -1,30 +1,33 @@
+
 # MVP-03 — Configuración y almacenamiento (Android)
 
 ## Historias de usuario
-- Como usuario, quiero que la app recuerde mi tema preferido.
-- Como sistema, quiero guardar secretos de forma segura.
+- Como usuario, quiero que la app recuerde mi tema preferido para mejorar mi experiencia.
+- Como sistema, quiero guardar secretos de forma segura para proteger la información sensible.
 
 ## Criterios de aceptación
-- Preferencias con DataStore funcionales (ej. `theme_dark`).
-- Secretos cifrados (EncryptedSharedPreferences/Keystore).
+- Las preferencias (ej. `theme_dark`) deben persistir correctamente usando DataStore.
+- Los secretos deben almacenarse cifrados y nunca exponerse en el código fuente ni en logs.
 
 ## Entregables
-- Wrapper `PreferencesRepository` y `SecureStorage`.
+- Wrapper `PreferencesRepository` para preferencias.
+- Wrapper `SecureStorage` para secretos y tokens.
 
-## Comandos
-- `./gradlew :app:test`
+## Comandos útiles
+- Ejecutar pruebas: `./gradlew :app:test`
 
-## Código de ejemplo
+## Ejemplo de código
 ```kotlin
 val THEME = booleanPreferencesKey("theme_dark")
 val ds = context.dataStore
-suspend fun setDark(v:Boolean)=ds.edit{it[THEME]=v}
-val isDark = ds.data.map{it[THEME]?:false}
+suspend fun setDark(v:Boolean) = ds.edit { it[THEME] = v }
+val isDark = ds.data.map { it[THEME] ?: false }
 ```
 
-## ADRs
-- Ver decisiones del sprint en `./ADRs/`.
-## Gherkin (ejemplos)
+## ADRs relevantes
+- Revisa las decisiones técnicas en la carpeta `./ADRs/`.
+
+## Ejemplo Gherkin
 ```gherkin
 Feature: Preferencias de tema
   Scenario: Guardado de preferencia
@@ -33,10 +36,10 @@ Feature: Preferencias de tema
     Then la app inicia en modo oscuro
 ```
 
-## DoR extendido
-- Claves de preferencias y migraciones definidas.
-- Política de reseteo por defecto acordada.
+## Definición de Ready (DoR) extendida
+- Claves de preferencias y migraciones documentadas.
+- Política de reseteo por defecto acordada y comunicada.
 
-## DoD extendido
-- Pruebas de lectura/escritura y migración verde.
-- Secretos nunca en VCS; revisión de logs sin fugas.
+## Definición de Done (DoD) extendida
+- Pruebas de lectura/escritura y migración exitosas.
+- Verificación de que los secretos nunca se exponen en VCS ni en logs.
