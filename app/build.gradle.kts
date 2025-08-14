@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("dagger.hilt.android.plugin")
     alias(libs.plugins.ksp)
 }
@@ -157,40 +158,56 @@ tasks.matching { it.name.startsWith("parse") && it.name.endsWith("Resources") }.
 }
 
 dependencies {
+    // Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
 
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+
+    // Compose Core
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    
-    // Enhanced Compose libraries
-    implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.compose.material.icons)
-    implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":core:designsystem"))
+    // ViewModel & Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Project modules
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    implementation(project(":feature:home"))
     implementation(project(":data:local"))
 
-    // Hilt
+    // Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-
+    // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // UI Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+tasks.preBuild {
+    dependsOn(sanitizeRes)
 }

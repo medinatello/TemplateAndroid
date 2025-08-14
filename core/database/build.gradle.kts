@@ -10,14 +10,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.incremental" to "true"
-                )
-            }
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -33,4 +25,9 @@ dependencies {
     api(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
 }
