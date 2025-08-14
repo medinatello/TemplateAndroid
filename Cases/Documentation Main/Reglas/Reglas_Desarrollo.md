@@ -1,0 +1,3 @@
+(Reglas de desarrollo unificadas)
+
+...contenido combinado de reglas_desarrollo.md y Reglas_Desarrollo_v2.md...

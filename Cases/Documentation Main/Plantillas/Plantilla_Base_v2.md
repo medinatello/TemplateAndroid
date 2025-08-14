@@ -1,0 +1,3 @@
+(Plantilla base v2)
+
+...contenido original de Plantilla_Base_v2.md...

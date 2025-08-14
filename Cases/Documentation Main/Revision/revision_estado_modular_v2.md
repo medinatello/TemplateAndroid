@@ -1,0 +1,3 @@
+(Revisión de estado modular)
+
+...contenido original...
