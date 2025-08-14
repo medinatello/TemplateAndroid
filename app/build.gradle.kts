@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -16,6 +18,30 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            buildConfigField("String", "API_BASE_URL", "\"https://api-dev.sortisplus.com\"")
+            buildConfigField("String", "FEATURE_FLAGS_JSON", "\"{\\\"enableAnalytics\\\": false, \\\"enableCrashReporting\\\": true}\"")
+        }
+        create("stg") {
+            dimension = "environment"
+            applicationIdSuffix = ".stg"
+            versionNameSuffix = "-staging"
+            buildConfigField("String", "API_BASE_URL", "\"https://api-staging.sortisplus.com\"")
+            buildConfigField("String", "FEATURE_FLAGS_JSON", "\"{\\\"enableAnalytics\\\": true, \\\"enableCrashReporting\\\": true}\"")
+        }
+        create("prd") {
+            dimension = "environment"
+            versionNameSuffix = "-prod"
+            buildConfigField("String", "API_BASE_URL", "\"https://api.sortisplus.com\"")
+            buildConfigField("String", "FEATURE_FLAGS_JSON", "\"{\\\"enableAnalytics\\\": true, \\\"enableCrashReporting\\\": true}\"")
+        }
     }
 
     buildTypes {
@@ -43,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     
     composeOptions {
@@ -153,6 +180,11 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":feature:home"))
     implementation(project(":data:local"))
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
