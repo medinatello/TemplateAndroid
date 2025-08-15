@@ -6,13 +6,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.sortisplus.core.ui.components.SortisTextButton
 import com.sortisplus.core.ui.theme.Dimensions
 import com.sortisplus.core.ui.theme.SortisPreviewTheme
@@ -46,15 +50,23 @@ import com.sortisplus.core.ui.theme.SortisPreviewTheme
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
+    onLogout: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val appConfig by viewModel.appConfig.collectAsState()
+    val authState by viewModel.authState.collectAsState()
     val isAuthenticated by viewModel.isAuthenticated.collectAsState()
     
     val darkThemeEnabled = appConfig?.isDarkTheme ?: false
     val notificationsEnabled = true // TODO: Add to AppConfig when needed
     val analyticsEnabled = false // TODO: Add to AppConfig when needed
+    
+    // Handle logout
+    fun handleLogout() {
+        viewModel.logout()
+        onLogout()
+    }
 
     Scaffold(
         topBar = {
@@ -81,10 +93,55 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(Dimensions.paddingLarge)
         ) {
             Text(
-                text = "App Preferences",
+                text = "Settings",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(vertical = Dimensions.paddingMedium)
             )
+
+            // User Profile Section
+            if (isAuthenticated) {
+                SettingsSection(title = "Account") {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(Dimensions.cardPadding),
+                            horizontalArrangement = Arrangement.spacedBy(Dimensions.paddingMedium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(40.dp)
+                            )
+
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = viewModel.getUserDisplayName(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = viewModel.getUserEmail(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        
+                        // Logout Button
+                        SettingsActionItem(
+                            icon = Icons.Default.ExitToApp,
+                            title = "Sign Out",
+                            description = "Sign out of your account",
+                            onClick = { handleLogout() }
+                        )
+                    }
+                }
+            }
 
             // Appearance Settings
             SettingsSection(title = "Appearance") {

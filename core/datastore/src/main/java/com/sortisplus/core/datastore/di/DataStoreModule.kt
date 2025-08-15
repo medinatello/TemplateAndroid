@@ -1,6 +1,7 @@
 package com.sortisplus.core.datastore.di
 
 import android.content.Context
+import com.sortisplus.core.datastore.AuthenticationManager
 import com.sortisplus.core.datastore.ConfigurationManager
 import com.sortisplus.core.datastore.DataStoreInitializer
 import com.sortisplus.core.datastore.PreferencesRepository
@@ -60,5 +61,13 @@ object DataStoreModule {
         configurationManager: ConfigurationManager
     ): DataStoreInitializer {
         return DataStoreInitializer(context, configurationManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthenticationManager(
+        configurationManager: ConfigurationManager
+    ): AuthenticationManager {
+        return AuthenticationManager(configurationManager)
     }
 }

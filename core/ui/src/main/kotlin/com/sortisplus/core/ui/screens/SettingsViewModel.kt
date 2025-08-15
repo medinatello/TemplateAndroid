@@ -3,6 +3,8 @@ package com.sortisplus.core.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sortisplus.core.datastore.AppConfig
+import com.sortisplus.core.datastore.AuthenticationManager
+import com.sortisplus.core.datastore.AuthState
 import com.sortisplus.core.datastore.ConfigurationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val configurationManager: ConfigurationManager
+    private val configurationManager: ConfigurationManager,
+    private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
 
     /**
@@ -33,12 +36,19 @@ class SettingsViewModel @Inject constructor(
     /**
      * Current authentication state
      */
+    val authState: StateFlow<AuthState> = authenticationManager.authState as StateFlow<AuthState>
+    
     val isAuthenticated: StateFlow<Boolean> = configurationManager.isUserAuthenticated
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
         )
+        
+    /**
+     * Current user information if authenticated
+     */
+    val currentUser = authenticationManager.currentUser
 
     /**
      * Toggles the dark theme setting
@@ -81,7 +91,21 @@ class SettingsViewModel @Inject constructor(
      */
     fun logout() {
         viewModelScope.launch {
-            configurationManager.logout()
+            authenticationManager.logout()
         }
+    }
+    
+    /**
+     * Gets the display name for the current user
+     */
+    fun getUserDisplayName(): String {
+        return currentUser?.name ?: "User"
+    }
+    
+    /**
+     * Gets the email for the current user
+     */
+    fun getUserEmail(): String {
+        return currentUser?.email ?: ""
     }
 }
