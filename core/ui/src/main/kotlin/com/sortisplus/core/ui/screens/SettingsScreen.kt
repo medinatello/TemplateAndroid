@@ -25,10 +25,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,11 +46,15 @@ import com.sortisplus.core.ui.theme.SortisPreviewTheme
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    var darkThemeEnabled by remember { mutableStateOf(false) }
-    var notificationsEnabled by remember { mutableStateOf(true) }
-    var analyticsEnabled by remember { mutableStateOf(false) }
+    val appConfig by viewModel.appConfig.collectAsState()
+    val isAuthenticated by viewModel.isAuthenticated.collectAsState()
+    
+    val darkThemeEnabled = appConfig?.isDarkTheme ?: false
+    val notificationsEnabled = true // TODO: Add to AppConfig when needed
+    val analyticsEnabled = false // TODO: Add to AppConfig when needed
 
     Scaffold(
         topBar = {
@@ -90,7 +93,7 @@ fun SettingsScreen(
                     title = "Dark Theme",
                     description = "Use dark theme for better viewing in low light",
                     checked = darkThemeEnabled,
-                    onCheckedChange = { darkThemeEnabled = it }
+                    onCheckedChange = { viewModel.setDarkTheme(it) }
                 )
             }
 
@@ -101,7 +104,7 @@ fun SettingsScreen(
                     title = "Push Notifications",
                     description = "Receive notifications about important updates",
                     checked = notificationsEnabled,
-                    onCheckedChange = { notificationsEnabled = it }
+                    onCheckedChange = { /* TODO: Implement when added to DataStore */ }
                 )
             }
 
@@ -112,7 +115,7 @@ fun SettingsScreen(
                     title = "Analytics",
                     description = "Help improve the app by sharing anonymous usage data",
                     checked = analyticsEnabled,
-                    onCheckedChange = { analyticsEnabled = it }
+                    onCheckedChange = { /* TODO: Implement when added to DataStore */ }
                 )
             }
 

@@ -21,7 +21,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.startup.runtime)
     implementation(libs.lifecycle.viewmodel.ktx)
-    // implementation(libs.security.crypto) // Temporalmente comentado - dependencia no disponible
+    // implementation(libs.security.crypto) // Temporalmente deshabilitado - versión no disponible
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

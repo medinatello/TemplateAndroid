@@ -15,7 +15,7 @@ coroutines = "1.8.1"
 detekt = "1.23.6"
 hilt = "2.48"
 kotlinxSerialization = "1.6.3"
-securityCrypto = "1.1.0"
+securityCrypto = "1.1.0-alpha07"
 startup = "1.1.1"
 viewModel = "2.8.4"
 

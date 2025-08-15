@@ -2,7 +2,6 @@ package com.sortisplus.core.datastore
 
 import android.content.Context
 import android.content.SharedPreferences
-// TODO: Reactivar cuando security-crypto esté disponible
 // import androidx.security.crypto.EncryptedSharedPreferences
 // import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,8 +21,10 @@ class SecureStorage @Inject constructor(
 ) {
     private val fileName = "secure_preferences"
     
-    // TODO: Reemplazar con EncryptedSharedPreferences cuando security-crypto esté disponible
+    // TODO: Reemplazar con EncryptedSharedPreferences cuando esté disponible
+    // Actualmente usando SharedPreferences normal con advertencia de seguridad
     private val encryptedSharedPreferences: SharedPreferences by lazy {
+        android.util.Log.w("SecureStorage", "Using regular SharedPreferences instead of EncryptedSharedPreferences. Data is NOT encrypted!")
         context.getSharedPreferences(fileName, Context.MODE_PRIVATE)
     }
 
