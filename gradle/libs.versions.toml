@@ -15,6 +15,9 @@ coroutines = "1.8.1"
 detekt = "1.23.6"
 hilt = "2.48"
 kotlinxSerialization = "1.6.3"
+securityCrypto = "1.1.0-alpha07"
+startup = "1.1.1"
+viewModel = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +53,9 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+security-crypto = { group = "androidx.security.crypto", name = "security-crypto", version.ref = "securityCrypto" }
+startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewModel" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

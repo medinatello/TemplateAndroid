@@ -75,6 +75,11 @@ fun AppNavigation(
             SettingsScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onLogout = {
+                    navController.navigate(AppRoute.Login) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
         }
@@ -139,6 +144,12 @@ class AppNavigator(private val navController: NavHostController) {
     }
 
     fun navigateToLogin() {
+        navController.navigate(AppRoute.Login) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+    
+    fun logout() {
         navController.navigate(AppRoute.Login) {
             popUpTo(0) { inclusive = true }
         }

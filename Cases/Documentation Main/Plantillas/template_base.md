@@ -1,0 +1,3 @@
+(Plantilla base v1)
+
+...contenido original de template_base.md...
