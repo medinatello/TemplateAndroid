@@ -184,6 +184,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Project modules
+    implementation(project(":shared"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
@@ -192,6 +193,9 @@ dependencies {
 
     // Dependency Injection
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
     ksp(libs.hilt.compiler)
 
     // Testing
