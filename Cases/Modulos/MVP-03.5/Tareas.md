@@ -1,75 +1,53 @@
-# Tareas del MVP-03.5: Fundamentos KMP
+# TAREAS — MVP-03.5 KMP
 
-## Historias de Usuario (Técnicas)
+> Todas las tareas deben respetar los estándares definidos en `Cases/Documentation Main`.
 
--   **Como desarrollador,** quiero una estructura de proyecto KMP con un módulo `shared` para poder escribir lógica de negocio una sola vez y compartirla entre Android y Escritorio.
--   **Como arquitecto,** quiero que las dependencias de base de datos, preferencias y networking sean multiplataforma para asegurar la consistencia entre diferentes plataformas.
+## T-01 — Configuración de módulos y targets
+**Objetivo**: Crear el módulo `shared` y `desktopApp`, e incluir los targets `androidTarget()` y `jvm("desktop")`.
 
-## Entregables
+**Definición de Hecho**:
+- Los módulos `shared` y `desktopApp` aparecen en `settings.gradle.kts`.
+- Se definen los source sets `commonMain/commonTest/androidMain/desktopMain`.
+- Los comandos `./gradlew :androidApp:assembleDebug` y `./gradlew :desktopApp:run` se ejecutan sin errores.
 
--   Nueva estructura de módulos (`shared`, `androidApp`, `desktopApp`).
--   Configuración de Gradle (`build.gradle.kts`) para KMP.
--   Código migrado a `commonMain`.
--   Aplicación de escritorio "Hola Mundo" funcional.
+## T-02 — Dependencias base multiplataforma
+**Objetivo**: Añadir Ktor, SQLDelight, Multiplatform‑Settings y Koin al módulo `shared`.
 
----
+**Definición de Hecho**:
+- El `build.gradle.kts` de `shared` incluye las dependencias y plugins necesarios.
+- `./gradlew :shared:assemble` se ejecuta sin errores.
+- Prueba simple que referencia cada librería compilando correctamente.
 
-## Task Breakdown
+## T-03 — Implementar `expect/actual` inicial
+**Objetivo**: Definir y concretar las abstracciones `KeyValueStore`, `AppClock`, `DbDriverFactory` y `httpClient`.
 
-### T-01: Reestructuración del Proyecto a KMP
-**Estimación:** 2 días
-**Prioridad:** Crítica
+**Definición de Hecho**:
+- Las interfaces `expect` están declaradas en `commonMain`.
+- Las implementaciones `actual` están presentes en `androidMain` y `desktopMain`.
+- Existen pruebas unitarias en `commonTest` que validan el comportamiento de `KeyValueStore` y `AppClock`.
+- La cobertura de código del módulo `shared` es igual o superior al 80%.
 
--   [ ] Crear un nuevo módulo `shared`.
--   [ ] Mover la lógica de los módulos `core` existentes al nuevo módulo `shared`.
--   [ ] Renombrar el módulo `app` a `androidApp` para mayor claridad.
--   [ ] Configurar `settings.gradle.kts` para incluir los nuevos módulos.
--   [ ] Actualizar el `build.gradle.kts` del módulo `shared` para usar el plugin `kotlin-multiplatform`.
--   [ ] Definir los `sourceSets` para `commonMain`, `androidMain`, y `desktopMain`.
+## T-04 — Inyección de dependencias (DI) en `shared` y puente con Hilt
+**Objetivo**: Configurar Koin en el módulo `shared` y establecer el puente con Hilt para la UI de Android.
 
-### T-02: Introducir Dependencias KMP
-**Estimación:** 2 días
-**Prioridad:** Alta
+**Definición de Hecho**:
+- Se define un módulo de Koin con casos de uso, repositorios y clientes.
+- Se inicializa Koin en el punto de entrada de Android (`Application`).
+- Existe documentación breve o ADR que explique el puente entre Hilt y Koin.
+- La aplicación Android arranca correctamente (`assembleDebug` + ejecución).
 
--   [ ] Añadir **Ktor** al `commonMain` para networking.
--   [ ] Añadir **SQLDelight** al `commonMain` para la base de datos.
-    -   Configurar el plugin de Gradle para SQLDelight.
-    -   Crear un archivo `.sq` de ejemplo.
--   [ ] Añadir **Multiplatform-Settings** al `commonMain` para las preferencias.
--   [ ] Añadir **Koin** al `commonMain` como solución de inyección de dependencias.
+## T-05 — Aplicación de escritorio mínima
+**Objetivo**: Crear una app de escritorio con Compose que utilice código de `shared`.
 
-### T-03: Migrar Lógica a `commonMain`
-**Estimación:** 3 días
-**Prioridad:** Alta
+**Definición de Hecho**:
+- El módulo `desktopApp` compila y se ejecuta con `./gradlew :desktopApp:run`.
+- Se muestra una ventana con un texto estático.
+- La app de escritorio llama a un caso de uso definido en `shared` y muestra su resultado en la consola o UI.
 
--   [ ] Mover los modelos de datos (DTOs, entidades) a `commonMain`.
--   [ ] Mover los repositorios (abstracciones) a `commonMain`.
--   [ ] Adaptar los casos de uso para que residan en `commonMain`.
--   [ ] Reemplazar las dependencias específicas de Android (Room, DataStore, Hilt) en el código migrado por las nuevas abstracciones KMP.
+## T-06 — Calidad de código y CI
+**Objetivo**: Garantizar estándares de calidad y configurar un pipeline de integración continua.
 
-### T-04: Adaptar la App de Android
-**Estimación:** 2 días
-**Prioridad:** Media
-
--   [ ] Hacer que el módulo `androidApp` dependa del módulo `shared`.
--   [ ] Crear implementaciones (`actual`) en `androidMain` para las declaraciones (`expect`) de `commonMain` si fuera necesario.
--   [ ] Conectar la UI de Jetpack Compose en Android con los ViewModels que ahora usan la lógica de `shared`.
--   [ ] Asegurarse de que Hilt y Koin coexisten (Hilt para la capa de UI de Android, Koin para la lógica compartida).
-
-### T-05: Crear la App de Escritorio
-**Estimación:** 1 día
-**Prioridad:** Media
-
--   [ ] Crear un nuevo módulo `desktopApp`.
--   [ ] Configurar el `build.gradle.kts` para usar `compose.desktop`.
--   [ ] Crear una función `main` que inicie una ventana de Compose for Desktop.
--   [ ] Mostrar un texto "Hola KMP" en la ventana.
--   [ ] Asegurarse de que la aplicación de escritorio puede compilarse y ejecutarse en la máquina de desarrollo.
-
----
-
-## Riesgos
-
--   **Complejidad de Gradle:** La configuración de KMP puede ser compleja. Mitigación: Seguir la documentación oficial de JetBrains y empezar con una configuración mínima.
--   **Coexistencia de Hilt y Koin:** Puede haber conflictos o dificultades al hacer que ambos sistemas de DI trabajen juntos. Mitigación: Definir claramente los límites de cada uno (Hilt para `androidApp`, Koin para `shared`).
--   **Curva de Aprendizaje:** El equipo puede necesitar tiempo para familiarizarse con las nuevas librerías KMP (SQLDelight, Ktor). Mitigación: Realizar pruebas de concepto (PoCs) para cada librería antes de la integración completa.
+**Definición de Hecho**:
+- Las tareas `ktlintCheck` y `detekt` están configuradas y pasan sin errores.
+- Existen scripts de CI (por ejemplo, GitHub Actions) que ejecutan: `:shared:allTests`, `:androidApp:assembleDebug` y `:desktopApp:test`.
+- Los reportes de pruebas y cobertura se generan y publican como artefactos del pipeline.

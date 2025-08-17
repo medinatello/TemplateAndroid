@@ -1,33 +1,121 @@
 # MVP-03.5 — Fundamentos de Kotlin Multiplatform (KMP)
 
-Este MVP es un paso intermedio y fundamental para transformar la base de código de una aplicación exclusiva de Android a un proyecto Kotlin Multiplatform (KMP). El objetivo es reestructurar el proyecto, introducir las dependencias necesarias y establecer las bases para compartir código entre Android, Windows, Linux y macOS.
+Este MVP es un paso intermedio para transformar una app Android en un proyecto Kotlin Multiplatform (KMP). El objetivo es crear la base compartida (módulo `shared`), definir targets, fijar versiones, preparar DI, almacenamiento, red y pruebas para Android y Escritorio (Windows/Linux/macOS).
 
-**Este MVP no introduce nuevas funcionalidades de cara al usuario.** Su propósito es puramente técnico y de arquitectura.
+> Este MVP no introduce funcionalidades visibles para el usuario final. Es de arquitectura.
 
-## Objetivos Principales
+## Versiones y targets (obligatorias)
 
-1.  **Reestructuración del Proyecto:**
-    *   Crear un módulo `shared` que contenga la lógica de negocio común.
-    *   Configurar los `sourceSets` de Gradle para `commonMain`, `androidMain`, y `desktopMain`.
+- **Kotlin**: 2.0.x
+- **Gradle**: 8.x
+- **AGP (Android Gradle Plugin)**: compatible con Kotlin 2.0.x
+- **Java**: 17
+- **Compose Multiplatform**: versión estable compatible con Kotlin 2.0.x
+- **Ktor Client**: 2.x
+- **SQLDelight**: 2.x
+- **Multiplatform-Settings**: 1.x
+- **DI**: Koin 3.x
 
-2.  **Migración de Código Compartido:**
-    *   Mover modelos de datos, validadores y lógica de negocio no dependiente de Android al módulo `shared` en `commonMain`.
+**Targets iniciales**
 
-3.  **Introducción de Librerías KMP:**
-    *   Reemplazar librerías específicas de Android por sus alternativas KMP:
-        *   **Base de Datos:** Room → **SQLDelight**
-        *   **Preferencias:** DataStore → **Multiplatform-Settings**
-        *   **Inyección de Dependencias:** Hilt → **Koin** (en el código compartido)
-    *   Añadir **Ktor** como cliente HTTP para `commonMain`.
+- `androidTarget()`
+- `jvm("desktop")` (Windows/Linux/macOS)
 
-4.  **Configuración de Plataformas:**
-    *   **Android (`androidMain`):** Adaptar la app de Android para que consuma la lógica del módulo `shared`. Hilt puede seguir utilizándose en la capa de UI de Android.
-    *   **Escritorio (`desktopMain`):** Crear una aplicación de escritorio mínima (una ventana con un "Hola Mundo") para verificar que la compilación y ejecución en Windows, Linux y macOS es correcta.
+> iOS queda fuera de este MVP; se documenta como target futuro.
 
-## Criterios de Aceptación
+## Estructura del proyecto (resultado esperado)
 
-*   El proyecto compila exitosamente para los targets de Android y Escritorio.
-*   La aplicación de Android se ejecuta y consume al menos un componente del módulo `shared`.
-*   La aplicación de escritorio se lanza y muestra una ventana simple.
-*   Las nuevas dependencias KMP (Ktor, SQLDelight, Koin, Multiplatform-Settings) están configuradas y son accesibles desde `commonMain`.
-*   La estructura de directorios y módulos sigue las convenciones de KMP.
+```
+/androidApp
+/desktopApp
+/shared
+  /src/commonMain
+  /src/commonTest
+  /src/androidMain
+  /src/androidUnitTest
+  /src/desktopMain
+  /src/desktopTest
+settings.gradle.kts
+build.gradle.kts (raíz y por módulo)
+```
+
+## Superficies `expect/actual` que se establecen en 03.5
+
+1) **KeyValueStore**
+   - `expect interface KeyValueStore { fun getString(key: String): String?; fun putString(key: String, value: String); }`
+   - `actual` en Android: Multiplatform‑Settings respaldado por SharedPreferences/DataStore según configuración.
+   - `actual` en Desktop: Multiplatform‑Settings en archivo local.
+
+2) **AppClock**
+   - `expect interface AppClock { fun now(): Long }`
+   - `actual` por plataforma usando utilidades estándar.
+
+3) **DbDriverFactory** (SQLDelight)
+   - `expect class DbDriverFactory { fun createDriver(schema: SqlSchema): SqlDriver }`
+   - `actual` Android: `AndroidSqliteDriver`; Desktop: `JdbcSqliteDriver`.
+
+4) **HttpClientFactory** (Ktor)
+   - `expect fun httpClient(): HttpClient`
+   - `actual` Android: motor Android u OkHttp; Desktop: CIO.
+
+## Librerías KMP y decisiones
+
+- **Networking**: Ktor Client en `commonMain`. Configurar timeouts, logging y reintentos básicos.
+- **Base de datos**: SQLDelight. El esquema se define en `commonMain` y los drivers específicos en cada plataforma.
+- **Preferencias**: Multiplatform‑Settings.
+- **DI**: Koin solo en `shared`. En Android, Hilt puede seguir en la capa de UI; se deberá conectar a Koin mediante un adaptador.
+- **UI Desktop**: Compose Multiplatform (aplicación mínima “Hola Mundo”) para validar compilación y ejecución.
+
+Se registrará un ADR que justifique la sustitución de Room/DataStore/Hilt por SQLDelight/Settings/Koin.
+
+## Criterios de aceptación (Definition of Done del MVP 03.5)
+
+1. El proyecto **compila** para Android y Desktop.
+2. `androidApp` consume al menos **un caso de uso** desde `shared`.
+3. `desktopApp` ejecuta una ventana mínima con un texto de verificación.
+4. Ktor, SQLDelight, Multiplatform‑Settings y Koin están **configurados en `commonMain`** y accesibles.
+5. **Pruebas**:
+   - `shared`: pruebas unitarias con **80%+ de cobertura** en lógica pura.
+   - `androidApp`: smoke test de arranque.
+   - `desktopApp`: test simple de inicialización.
+6. **CI**:
+   - Pipeline que ejecute `./gradlew :shared:allTests :androidApp:assembleDebug :desktopApp:test`.
+   - Publicación de reportes de pruebas y cobertura.
+7. **Estilo/Calidad**: ktlint y Detekt configurados al menos con reglas básicas.
+
+## Pasos de implementación (resumen ejecutivo)
+
+1. **Reestructuración**: crear módulo `shared` y `desktopApp`; configurar `settings.gradle.kts` y los targets `androidTarget()` y `jvm("desktop")`.
+2. **Dependencias**: añadir Ktor, SQLDelight, Multiplatform‑Settings y Koin en el módulo `shared`.
+3. **expect/actual**: crear `KeyValueStore`, `AppClock`, `DbDriverFactory` y `httpClient` como expect en `commonMain` e implementar sus versiones `actual` para Android y Desktop.
+4. **DI**: definir módulos de Koin en `shared` (para casos de uso, repositorios, clientes). En Android, inicializar Koin y establecer el puente con Hilt si la UI sigue con Hilt.
+5. **Desktop**: implementar una app mínima con Compose Desktop que invoque un caso de uso de `shared`.
+6. **Pruebas**: agregar pruebas unitarias en `commonTest`; pruebas de integración de inicio en Android y Desktop; asegurar cobertura mínima de 80% en `shared`.
+7. **CI y Estándares**: añadir tareas de ktlint y Detekt y configurar un workflow mínimo de CI.
+8. **Docs**: al finalizar, crear un archivo `resultado.md` resumiendo lo realizado, versiones usadas y árbol de módulos resultante.
+
+## Comandos útiles
+
+- Construir la app de Android: `./gradlew :androidApp:assembleDebug`
+- Ejecutar la app de escritorio: `./gradlew :desktopApp:run`
+- Ejecutar pruebas de `shared`: `./gradlew :shared:allTests`
+- Ejecutar linters: `./gradlew ktlintCheck detekt`
+- Ejecutar el pipeline localmente: `./gradlew :shared:allTests :androidApp:assembleDebug :desktopApp:test`
+
+## Riesgos y mitigaciones
+
+- **Conflictos entre Hilt y Koin**: se debe aislar Hilt a la capa de UI de Android y usar Koin en el código compartido. Documentar el adaptador en un ADR.
+- **Deuda técnica Android‑only**: si se detectan APIs demasiado acopladas a Android, se deben encapsular mediante `expect/actual` o retrasar su migración a un MVP posterior.
+- **Complejidad de KMP**: la configuración multiplataforma puede ser compleja. Mitigación: comenzar con un caso mínimo y seguir la documentación oficial.
+- **Curva de aprendizaje**: el equipo debe familiarizarse con SQLDelight, Ktor y Koin multiplataforma. Se recomienda crear PoCs antes de integrarlos.
+
+## Entregable
+
+Al finalizar este MVP, se debe crear el archivo `Cases/Modulos/MVP-03.5/resultado.md` que incluya:
+
+- Un resumen técnico de lo implementado (módulos creados, targets configurados, librerías añadidas).
+- Las versiones finales utilizadas.
+- El árbol de módulos y sourceSets resultante.
+- Las decisiones técnicas (enlazando ADRs correspondientes).
+- Instrucciones de build/run y las métricas de cobertura obtenidas.
+- Notas y riesgos pendientes para futuros sprints.
