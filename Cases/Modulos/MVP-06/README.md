@@ -1,3 +1,7 @@
-# MVP-06 — Sesión y estado de usuario (Android)
+# MVP-06 — Feature: Autenticación (KMP)
 
-Sección 06 de `docs/TechMap.md`. Persistencia con DataStore, `ViewModel`, `SavedStateHandle`; bloqueo por inactividad y reautenticación parcial.
+**Nota KMP:** La lógica de negocio para la autenticación (ej. login, logout, gestión de sesión) debe implementarse en el módulo `shared` (`commonMain`). La UI será específica para cada plataforma (`androidMain`, `desktopMain`).
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

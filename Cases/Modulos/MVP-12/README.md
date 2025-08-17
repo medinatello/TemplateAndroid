@@ -1,3 +1,7 @@
-# MVP-12 — Pruebas y CI/CD (Android)
+# MVP-12 — Refactorización y Optimización (KMP)
 
-Sección 12 de `docs/TechMap.md`. `./gradlew lint test connectedCheck`, reportes, umbrales de cobertura, firmas y release.
+**Nota KMP:** La refactorización se centrará en optimizar el código compartido en `commonMain` y mejorar el rendimiento en todas las plataformas. Se analizará el tamaño de la aplicación y el tiempo de inicio tanto en Android como en Escritorio.
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

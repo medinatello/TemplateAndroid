@@ -1,3 +1,7 @@
-# MVP-09 — Archivos: subida/descarga (Android)
+# MVP-09 — Testing Avanzado (KMP)
 
-Sección 09 de `docs/TechMap.md`. Upload multipart con OkHttp/Retrofit, `DownloadManager`/`WorkManager`, progreso, pausa/reanudación, checksum.
+**Nota KMP:** Las pruebas unitarias y de integración para la lógica de negocio en `commonMain` se escribirán con el framework de testing de Kotlin. Las pruebas de UI seguirán siendo específicas de cada plataforma (`androidTest` para Android, etc.).
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

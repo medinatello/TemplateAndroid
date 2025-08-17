@@ -1,3 +1,7 @@
-# MVP-08 — Telemetría y logging (Android)
+# MVP-08 — Feature: Pantalla de Perfil (KMP)
 
-Sección 08 de `docs/TechMap.md`. Timber + OpenTelemetry/Crashlytics, métricas y trazas con correlación `traceId` y dashboards base.
+**Nota KMP:** La lógica para gestionar los datos del perfil de usuario se implementará en `commonMain`. La UI de la pantalla de perfil será específica para cada plataforma.
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

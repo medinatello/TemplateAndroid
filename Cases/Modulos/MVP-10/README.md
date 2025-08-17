@@ -1,3 +1,7 @@
-# MVP-10 — Notificaciones y deep links (Android)
+# MVP-10 — CI/CD (KMP)
 
-Sección 10 de `docs/TechMap.md`. FCM, canales y categorías, manejo de payload, routing con `NavDeepLinkBuilder`.
+**Nota KMP:** El pipeline de CI/CD se actualizará para compilar, probar y empaquetar tanto la aplicación de Android como la de Escritorio. Se ejecutarán las pruebas de `commonMain` como un paso compartido.
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

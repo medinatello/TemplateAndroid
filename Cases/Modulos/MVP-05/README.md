@@ -1,3 +1,7 @@
-# MVP-05 — Autenticación y autorización (Android)
+# MVP-05 — Lógica de Negocio y Casos de Uso (KMP)
 
-Sección 05 de `docs/TechMap.md`. Credential Manager + AppAuth/OAuth2, tokens en Keystore, `AuthInterceptor`, refresh con backoff, logout seguro.
+**Nota KMP:** La lógica de negocio, los casos de uso y los repositorios definidos en este MVP deben implementarse en el módulo `shared` (`commonMain`) para ser reutilizados por todas las plataformas (Android, Escritorio, etc.).
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)

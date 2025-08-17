@@ -1,3 +1,7 @@
-# MVP-07 — Background y sincronización (Android)
+# MVP-07 — Feature: Pantalla de Inicio (KMP)
 
-Sección 07 de `docs/TechMap.md`. WorkManager con constraints, workers idempotentes, tabla de sync, ventanas y política de conflictos.
+**Nota KMP:** La lógica para obtener y presentar los datos en la pantalla de inicio debe residir en `commonMain`. La UI (la composición de los elementos visuales) será específica para cada plataforma.
+
+---
+
+(El contenido original de los objetivos de este MVP sigue aquí)
