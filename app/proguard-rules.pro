@@ -18,6 +18,25 @@
 -keep class com.sortisplus.templateandroid.** { *; }
 -keep class com.sortisplus.feature.** { *; }
 -keep class com.sortisplus.core.** { *; }
+-keep class com.sortisplus.shared.** { *; }
+
+# KMP and Koin rules
+-keep class org.koin.** { *; }
+-keep class io.ktor.** { *; }
+-keep class kotlinx.serialization.** { *; }
+
+# SLF4J logging - fix for R8 missing class error
+-dontwarn org.slf4j.**
+-keep class org.slf4j.** { *; }
+-dontwarn ch.qos.logback.**
+-keep class ch.qos.logback.** { *; }
+
+# SQLDelight rules
+-keep class app.cash.sqldelight.** { *; }
+-dontwarn app.cash.sqldelight.**
+
+# Multiplatform Settings rules  
+-keep class com.russhwolf.settings.** { *; }
 
 # Preserve line number information for debugging stack traces
 -keepattributes SourceFile,LineNumberTable

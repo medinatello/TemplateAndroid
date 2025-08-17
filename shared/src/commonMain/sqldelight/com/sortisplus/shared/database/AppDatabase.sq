@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS User (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    createdAt INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM User;
+
+selectById:
+SELECT * FROM User WHERE id = ?;
+
+selectByEmail:
+SELECT * FROM User WHERE email = ?;
+
+insertUser:
+INSERT INTO User(name, email, createdAt) VALUES (?, ?, ?);
+
+updateUser:
+UPDATE User SET name = ?, email = ? WHERE id = ?;
+
+deleteUser:
+DELETE FROM User WHERE id = ?;
+
+deleteAll:
+DELETE FROM User;
