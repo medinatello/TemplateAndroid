@@ -1,17 +1,53 @@
-# MVP-04 — Cliente HTTP y API (KMP)
+# MVP-04 — Sprint 4
 
-Este MVP se enfoca en implementar la capa de red para la aplicación multiplataforma utilizando Ktor. La implementación se realizará en el módulo `shared` (`commonMain`), permitiendo que tanto Android como Escritorio compartan el mismo código para las llamadas a la API.
+Este módulo corresponde al **MVP 04** del proyecto.  En este sprint se
+desarrollan las funcionalidades priorizadas para la cuarta iteración,
+manteniendo la arquitectura limpia y aprovechando las bases del módulo
+`shared` establecidas en el MVP 03.5.  La meta es continuar construyendo
+sobre la plantilla multiplataforma, expandiendo las capacidades de la
+aplicación y asegurando que el código se mantenga modular y bien
+documentado.
 
-## Objetivos Principales
+## Objetivo principal
 
-1.  **Implementar Cliente Ktor:** Configurar un cliente Ktor en `commonMain` con las siguientes características:
-    *   Serialización con `kotlinx.serialization`.
-    *   Logging de peticiones y respuestas.
-    *   Manejo de autenticación (ej. interceptor para añadir tokens).
-    *   Política de reintentos.
+Implementar las historias de usuario asignadas al sprint 4, integrando
+correctamente el módulo `shared` cuando corresponda y asegurando que las
+funciones añadidas sigan los **estándares de desarrollo** definidos en la
+carpeta `Cases/Documentation Main`.  Todas las nuevas funcionalidades deben
+ser acompañadas de pruebas automáticas y documentación.
 
-2.  **Definir Modelos de Datos (DTOs):** Crear los Data Transfer Objects en `commonMain` para representar las respuestas de la API.
+## Criterios de aceptación (Definition of Done)
 
-3.  **Crear Repositorio de Red:** Abstraer las llamadas a la API en un `NetworkRepository` dentro de `commonMain`.
+1. **Código implementado** siguiendo la arquitectura limpia y las normas
+   especificadas en `DEVELOPMENT_STANDARDS.md`.
+2. **Pruebas unitarias** y, si corresponde, de integración con cobertura
+   mínima del **80 %** en la lógica de negocio añadida en este sprint.
+3. **Documentación actualizada**, incluyendo este README, las tareas en
+   `TAREAS.md` y la creación de `resultado.md` al finalizar.
+4. **Build exitoso** para todas las plataformas afectadas (Android y, si
+   aplica, Desktop).  El proyecto debe compilar sin errores.
+5. **Pipeline CI verde**: todas las tareas de lint, pruebas y compilación
+   deben completarse satisfactoriamente en la integración continua.
+6. **Revisión de código aprobada**: los cambios han sido revisados y
+   aprobados mediante un pull request.
 
-4.  **Manejo de Errores:** Implementar un sistema unificado para manejar errores de red (ej. conectividad, errores del servidor) en el código compartido.
+## Pasos de trabajo
+
+1. **Revisión de contexto**: Lee la documentación en
+   `Cases/Documentation Main`, repasa el trabajo realizado hasta el MVP 03.5
+   y estudia las historias de usuario asignadas a este sprint.
+2. **Planificación de tareas**: Desglosa las historias en subtareas en
+   `TAREAS.md`, definiendo una **Definición de Hecho** para cada una.
+3. **Implementación**: Desarrolla las funcionalidades siguiendo la
+   arquitectura modular.  Si necesitas lógica compartida,
+   colócala en el módulo `shared` y genera los bloques `expect/actual` en los
+   submódulos de plataforma.
+4. **Pruebas**: Escribe pruebas unitarias y de integración.  Verifica que la
+   cobertura supere el 80 % en la lógica añadida.  Ajusta la configuración
+   del build si es necesario.
+5. **Documentación y CI**: Actualiza la documentación y crea un
+   `resultado.md` al completar el sprint.  Ejecuta localmente las tareas de
+   CI (`ktlintCheck`, `detekt`, pruebas y build) antes de abrir el PR.
+
+Al completar el sprint, la carpeta `MVP-04` deberá contener todos los
+archivos mencionados y servir como referencia para futuros desarrolladores.

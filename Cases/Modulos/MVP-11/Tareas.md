@@ -1,33 +1,72 @@
-# MVP-11 — i18n, accesibilidad y theming (Android)
+# Tareas — MVP 11
 
-## Historias de usuario
-- Como usuario, quiero que la app respete el idioma y tamaño de texto.
+En este archivo se desglosan las tareas necesarias para completar el **MVP 11**.  Cada
+tarea cuenta con una **Definición de Hecho** (DoD) que sirve como criterio
+objetivo de cierre.  Ajusta las subtareas según las historias de usuario
+específicas de este sprint.
 
-## Criterios de aceptación
-- Claves en `strings.xml`, soporte Dynamic Type y contrastes.
+## T‑01 — Revisión de requisitos y planificación
+**Objetivo**: Entender las historias de usuario del sprint 11 y definir el
+alcance del trabajo.
 
-## Entregables
-- Recursos de idiomas, chequeos de a11y, temas.
+**Definición de Hecho**:
 
-## Código de ejemplo
-```xml
-<!-- res/values/strings.xml -->
-<string name="login">Login</string>
-```
+- Se han leído y comprendido las historias de usuario asignadas.
+- `DEVELOPMENT_STANDARDS.md` y el README general se han revisado para
+  recordar los estándares.
+- El equipo ha acordado las tareas a realizar y las ha documentado en este
+  archivo.
 
-## ADRs
-- Ver decisiones del sprint en `./ADRs/`.
-## Gherkin (ejemplos)
-```gherkin
-Feature: Accesibilidad
-  Scenario: Texto grande
-    Given que el usuario configura tamaño de texto máximo
-    When abre la app
-    Then los controles son legibles y navegables
-```
+## T‑02 — Implementación de funcionalidades
+**Objetivo**: Desarrollar la lógica correspondiente a las historias de usuario
+de este sprint.
 
-## DoR extendido
-- Idiomas objetivo y llaves definidas.
+**Definición de Hecho**:
 
-## DoD extendido
-- Chequeos de contraste y talkback aprobados.
+- Los archivos necesarios han sido modificados o creados.
+- El código respeta la arquitectura limpia y las convenciones del proyecto.
+- La aplicación compila sin errores en la(s) plataforma(s) afectadas usando
+  `./gradlew assembleDebug` o equivalente.
+
+## T‑03 — Integración con módulo `shared` y expect/actual
+**Objetivo**: Compartir la lógica común en `shared` y crear implementaciones
+por plataforma cuando sea necesario.
+
+**Definición de Hecho**:
+
+- La lógica multiplataforma reside en `shared/commonMain` y se han creado
+  las interfaces `expect` pertinentes.
+- Las implementaciones `actual` para Android y Desktop están ubicadas en
+  `androidMain` y `desktopMain` respectivamente.
+- Las pruebas en `commonTest` verifican el comportamiento de la lógica común.
+
+## T‑04 — Pruebas y cobertura
+**Objetivo**: Validar el funcionamiento del código mediante pruebas
+automáticas.
+
+**Definición de Hecho**:
+
+- Existen pruebas unitarias (y de integración si corresponde) que cubren
+  al menos el 80 % de la lógica añadida.
+- Los tests se ejecutan exitosamente con `./gradlew :shared:allTests` y los
+  respectivos targets (`:androidApp:assembleDebug`, `:desktopApp:test`).
+- Los casos límite y posibles errores se prueban explícitamente.
+
+## T‑05 — Documentación y CI
+**Objetivo**: Documentar los cambios y garantizar el correcto funcionamiento del
+pipeline de CI.
+
+**Definición de Hecho**:
+
+- Se ha actualizado este archivo y el `README.md` con información precisa y
+  se ha creado/actualizado `resultado.md` con el resumen del sprint.
+- Se ha corrido localmente `./gradlew ktlintCheck detekt` y se han
+  corregido los problemas detectados.
+- Se ha verificado que la configuración de CI ejecuta todas las tareas de
+  build, pruebas y análisis estático.
+
+---
+
+**Nota**: Ajusta o agrega tareas según lo exijan las historias de usuario del
+sprint.  La claridad en la definición de tareas y sus criterios de cierre
+facilita el trabajo colaborativo y la revisión posterior.
