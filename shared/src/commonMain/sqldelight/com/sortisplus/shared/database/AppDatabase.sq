@@ -5,6 +5,23 @@ CREATE TABLE IF NOT EXISTS User (
     createdAt INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS Person (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    birthDateMillis INTEGER NOT NULL,
+    weightKg REAL NOT NULL,
+    isLeftHanded INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Element (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER
+);
+
+-- User queries
 selectAll:
 SELECT * FROM User;
 
@@ -25,3 +42,40 @@ DELETE FROM User WHERE id = ?;
 
 deleteAll:
 DELETE FROM User;
+
+-- Person queries
+selectAllPersons:
+SELECT * FROM Person ORDER BY lastName, firstName;
+
+selectPersonById:
+SELECT * FROM Person WHERE id = ?;
+
+insertPerson:
+INSERT INTO Person(firstName, lastName, birthDateMillis, weightKg, isLeftHanded) 
+VALUES (?, ?, ?, ?, ?);
+
+updatePerson:
+UPDATE Person SET firstName = ?, lastName = ?, birthDateMillis = ?, weightKg = ?, isLeftHanded = ? 
+WHERE id = ?;
+
+deletePerson:
+DELETE FROM Person WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+-- Element queries
+selectAllElements:
+SELECT * FROM Element ORDER BY createdAt DESC;
+
+selectElementById:
+SELECT * FROM Element WHERE id = ?;
+
+insertElement:
+INSERT INTO Element(title, createdAt) VALUES (?, ?);
+
+updateElement:
+UPDATE Element SET title = ?, updatedAt = ? WHERE id = ?;
+
+deleteElement:
+DELETE FROM Element WHERE id = ?;
