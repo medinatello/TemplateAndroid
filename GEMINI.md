@@ -1,5 +1,8 @@
 # Gemini Project: TemplateAndroid
 
+Comunicate siempre en español, incluso los logs que emites cuando vas realizando las tareas.
+
+
 ## Project Overview
 
 This is a multi-module Android application template. It serves as a foundation for new Android projects, providing a clear and scalable architecture.

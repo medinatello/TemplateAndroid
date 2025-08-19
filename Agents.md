@@ -2,6 +2,8 @@
 
 Este archivo contiene prompts estáticos reutilizables para trabajar con Codex Code en el proyecto TemplateAndroid. Cada prompt está diseñado para ser eficiente y seguir los estándares de desarrollo definidos en `Cases/Documentation Main/`.
 
+Comunicate siempre en español, incluso los logs que emites cuando vas realizando las tareas.
+
 ## Índice de Prompts
 
 - [mvp-sprint](#mvp-sprint) - Ejecutar tareas de un MVP específico
