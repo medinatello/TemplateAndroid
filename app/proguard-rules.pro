@@ -35,6 +35,9 @@
 -keep class app.cash.sqldelight.** { *; }
 -dontwarn app.cash.sqldelight.**
 
+# Ktor rules for java.lang.management
+-dontwarn java.lang.management.**
+
 # Multiplatform Settings rules  
 -keep class com.russhwolf.settings.** { *; }
 

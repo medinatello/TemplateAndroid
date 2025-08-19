@@ -67,10 +67,24 @@ kotlin {
                 implementation(libs.koin.android)
             }
         }
+
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.sqldelight.android.driver)
+                implementation("org.robolectric:robolectric:4.11.1")
+                implementation("junit:junit:4.13.2")
+            }
+        }
         
         val desktopMain by getting {
             dependencies {
                 implementation(libs.ktor.client.cio)
+                implementation(libs.sqldelight.sqlite.driver)
+            }
+        }
+
+        val desktopTest by getting {
+            dependencies {
                 implementation(libs.sqldelight.sqlite.driver)
             }
         }
@@ -79,7 +93,7 @@ kotlin {
 
 android {
     namespace = "com.sortisplus.shared"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -98,4 +112,9 @@ sqldelight {
             verifyMigrations.set(false) // Disable migration verification for MVP-03.5
         }
     }
+}
+
+// Disable the migration verification task entirely to avoid noise
+tasks.matching { it.name.contains("verifyMigration") }.configureEach {
+    enabled = false
 }

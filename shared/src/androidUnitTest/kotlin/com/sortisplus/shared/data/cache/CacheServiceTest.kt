@@ -1,23 +1,29 @@
 package com.sortisplus.shared.data.cache
 
+import com.sortisplus.shared.TestDatabaseHelper
 import com.sortisplus.shared.database.AppDatabase
 import com.sortisplus.shared.platform.AppClock
 import kotlinx.coroutines.test.runTest
-import kotlin.test.*
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
+@RunWith(RobolectricTestRunner::class)
 class CacheServiceTest {
     
     private lateinit var database: AppDatabase
     private lateinit var cacheService: CacheService
     private lateinit var mockClock: MockAppClock
     
-    @BeforeTest
+    @Before
     fun setup() {
-        val driver = app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver(":memory:")
-        AppDatabase.Schema.create(driver)
-        database = AppDatabase(driver)
+        database = TestDatabaseHelper.createInMemoryDatabase()
         mockClock = MockAppClock()
         cacheService = CacheServiceImpl(database, mockClock)
     }
