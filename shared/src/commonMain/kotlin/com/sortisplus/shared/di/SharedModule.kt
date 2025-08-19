@@ -1,14 +1,18 @@
 package com.sortisplus.shared.di
 
+import com.sortisplus.shared.data.cache.CacheService
+import com.sortisplus.shared.data.cache.CacheServiceImpl
 import com.sortisplus.shared.data.repository.AuthRepositoryImpl
 import com.sortisplus.shared.data.repository.ElementRepositoryImpl
 import com.sortisplus.shared.data.repository.PersonRepositoryImpl
 import com.sortisplus.shared.data.repository.SettingsRepositoryImpl
+import com.sortisplus.shared.data.repository.UserRepositoryImpl
 import com.sortisplus.shared.database.AppDatabase
 import com.sortisplus.shared.domain.repository.AuthRepository
 import com.sortisplus.shared.domain.repository.ElementRepository
 import com.sortisplus.shared.domain.repository.PersonRepository
 import com.sortisplus.shared.domain.repository.SettingsRepository
+import com.sortisplus.shared.domain.repository.UserRepository
 import com.sortisplus.shared.domain.usecase.GetAppInfoUseCase
 import com.sortisplus.shared.domain.usecase.auth.LoginUseCase
 import com.sortisplus.shared.domain.usecase.auth.LogoutUseCase
@@ -42,12 +46,14 @@ val domainModule = module {
 val dataModule = module {
     single<HttpClient> { createHttpClient() }
     single<AppDatabase> { AppDatabase(get<DbDriverFactory>().createDriver()) }
+    single<CacheService> { CacheServiceImpl(get(), get()) }
     
     // Repository implementations
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PersonRepository> { PersonRepositoryImpl(get()) }
     single<ElementRepository> { ElementRepositoryImpl(get(), get()) }
+    single<UserRepository> { UserRepositoryImpl(get(), get(), get(), get()) }
 }
 
 val presentationModule = module {

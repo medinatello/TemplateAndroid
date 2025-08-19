@@ -79,3 +79,27 @@ UPDATE Element SET title = ?, updatedAt = ? WHERE id = ?;
 
 deleteElement:
 DELETE FROM Element WHERE id = ?;
+
+-- Cache table for HTTP responses
+CREATE TABLE IF NOT EXISTS CacheEntry (
+    key TEXT PRIMARY KEY,
+    data TEXT NOT NULL,
+    cachedAt INTEGER NOT NULL,
+    expiresAt INTEGER NOT NULL
+);
+
+-- Cache queries
+selectCacheByKey:
+SELECT * FROM CacheEntry WHERE key = ? AND expiresAt > ?;
+
+insertOrReplaceCacheEntry:
+INSERT OR REPLACE INTO CacheEntry(key, data, cachedAt, expiresAt) VALUES (?, ?, ?, ?);
+
+deleteExpiredCache:
+DELETE FROM CacheEntry WHERE expiresAt <= ?;
+
+deleteCacheByKey:
+DELETE FROM CacheEntry WHERE key = ?;
+
+clearAllCache:
+DELETE FROM CacheEntry;
