@@ -1,8 +1,10 @@
 package com.sortisplus.shared.presentation.viewmodel
 
+import com.sortisplus.shared.domain.repository.SettingsRepository
 import com.sortisplus.shared.domain.usecase.settings.AppSettings
 import com.sortisplus.shared.domain.usecase.settings.ObserveAppSettingsUseCase
 import com.sortisplus.shared.domain.usecase.settings.UpdateDarkThemeUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -14,15 +16,30 @@ class SettingsViewModelTest {
 
     private var darkThemeValue = false
     
-    private val mockObserveAppSettingsUseCase = object : ObserveAppSettingsUseCase {
-        fun execute() = flowOf(AppSettings(isDarkTheme = darkThemeValue, listOrder = "CREATED_DESC"))
-    }
-    
-    private val mockUpdateDarkThemeUseCase = object : UpdateDarkThemeUseCase {
-        suspend fun execute(enabled: Boolean) {
+    private val mockSettingsRepository = object : SettingsRepository {
+        private val _darkTheme = MutableStateFlow(darkThemeValue)
+        private val _listOrder = MutableStateFlow("CREATED_DESC")
+        
+        override val darkTheme = _darkTheme
+        override val listOrder = _listOrder
+        
+        override suspend fun setDarkTheme(enabled: Boolean) {
             darkThemeValue = enabled
+            _darkTheme.value = enabled
+        }
+        
+        override suspend fun setListOrder(order: String) {
+            _listOrder.value = order
+        }
+        
+        override suspend fun resetToDefaults() {
+            setDarkTheme(false)
+            setListOrder("CREATED_DESC")
         }
     }
+    
+    private val mockObserveAppSettingsUseCase = ObserveAppSettingsUseCase(mockSettingsRepository)
+    private val mockUpdateDarkThemeUseCase = UpdateDarkThemeUseCase(mockSettingsRepository)
 
     @Test
     fun `initial state should have correct default values`() = runTest {
