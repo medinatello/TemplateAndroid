@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    id("dagger.hilt.android.plugin")
     alias(libs.plugins.ksp)
 }
 
@@ -187,16 +186,15 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
-    implementation(project(":core:data"))
-    implementation(project(":core:datastore"))
-    implementation(project(":data:local"))
+    // Remove native Android modules - using shared KMP module instead
+    // implementation(project(":core:data"))
+    // implementation(project(":core:datastore"))  
+    // implementation(project(":data:local"))
 
-    // Dependency Injection
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
+    // Dependency Injection - Using Koin from shared module
     implementation(libs.koin.android)
     implementation(libs.koin.core)
-    ksp(libs.hilt.compiler)
+    implementation(libs.koin.androidx.compose)
 
     // Testing
     testImplementation(libs.junit)

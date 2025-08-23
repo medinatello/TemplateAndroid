@@ -109,12 +109,9 @@ sqldelight {
     databases {
         create("AppDatabase") {
             packageName.set("com.sortisplus.shared.database")
-            verifyMigrations.set(false) // Disable migration verification for MVP-03.5
+            verifyMigrations.set(true) // Enable migration verification for production safety
         }
     }
 }
 
-// Disable the migration verification task entirely to avoid noise
-tasks.matching { it.name.contains("verifyMigration") }.configureEach {
-    enabled = false
-}
+// Migration verification is now enabled for production safety
