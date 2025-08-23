@@ -9,42 +9,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
-import com.sortisplus.core.datastore.AuthState
-import com.sortisplus.core.datastore.AuthenticationManager
+import com.sortisplus.shared.domain.model.AuthState
+import com.sortisplus.shared.presentation.viewmodel.AuthenticationViewModel
 import com.sortisplus.core.ui.navigation.AppNavigation
 import com.sortisplus.core.ui.navigation.AppRoute
 import com.sortisplus.core.ui.theme.SortisTheme
-import dagger.hilt.android.AndroidEntryPoint
-import java.time.Clock
-import javax.inject.Inject
+import org.koin.androidx.compose.koinViewModel
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var clock: Clock
-    
-    @Inject
-    lateinit var authenticationManager: AuthenticationManager
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This app uses edge-to-edge displays by default.
         enableEdgeToEdge()
         setContent {
-            TemplateAndroidApp(authenticationManager)
+            TemplateAndroidApp()
         }
     }
 }
 
 @Composable
-fun TemplateAndroidApp(authenticationManager: AuthenticationManager) {
+fun TemplateAndroidApp() {
+    val authViewModel: AuthenticationViewModel = koinViewModel()
     // For now, we'll use system default themes until we integrate with DataStore
     val isDarkTheme = isSystemInDarkTheme()
     val useDynamicColor = true
     
     // Observe authentication state to determine start destination
-    val authState by authenticationManager.authState.collectAsState(initial = AuthState.Loading)
+    val uiState by authViewModel.uiState.collectAsState()
+    val authState = uiState.authState
     
     // Determine initial destination based on authentication state
     val startDestination = when (authState) {
